@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" data-page-type="dine_in">
+
+<head>
+  <title>Grub Lane - Dine-In Menu</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800|DM+Serif+Display:400,400i&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="img/favicon.png" type="image/png" />
+  <link rel="shortcut icon" href="img/favicon-icon.png" type="image/png" />
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="css/bootstrap.css" />
+  <link rel="stylesheet" href="css/animate.css" />
+  <link rel="stylesheet" href="css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="css/owl.theme.default.min.css" />
+  <link rel="stylesheet" href="css/aos.css" />
+  <link rel="stylesheet" href="css/magnific-popup.css" />
+
+  <!-- Icon Fonts -->
+  <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css" />
+  <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css" />
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Enhanced Styles -->
+  <style>
+    body {
+      font-family: 'Open Sans', Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Loader Styling */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    #loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    #loader svg {
+      width: 80px;
+      height: 80px;
+      animation: rotate 1.5s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Download Button Styling */
+    .download-button {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .download-button a {
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .download-button a:hover {
+      background-color: #e65347;
+      transform: translateY(-2px);
+    }
+
+    .download-button a i {
+      margin-right: 8px;
+      transition: margin-right 0.3s ease;
+    }
+
+    .download-button a:hover i {
+      margin-right: 12px;
+    }
+
+    /* Image Preview Styling */
+    .menu-preview {
+      display: block;
+      margin: 30px auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-preview:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Owl Carousel Customization */
+    .owl-carousel .item img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    /* Footer Styling */
+    .site-footer {
+      background-color: #343a40;
+      color: #ffffff;
+      padding: 40px 0;
+    }
+
+    .site-footer a {
+      color: #ff6347;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .site-footer a:hover {
+      color: #e65347;
+    }
+
+    .footer-social a {
+      font-size: 24px;
+      margin-right: 15px;
+      color: #ffffff;
+      transition: color 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      color: #ff6347;
+    }
+
+    /* Hero Section Enhancements */
+    .slider-item {
+      height: 60vh;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .slider-text h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 48px;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .slider-text p {
+      font-size: 18px;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-outline-white {
+      border-color: #ffffff;
+      color: #ffffff;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-outline-white:hover {
+      background-color: #ffffff;
+      color: #ff6347;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+      .download-button a {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .download-button a i {
+        margin-right: 6px;
+      }
+
+      .menu-preview {
+        margin: 20px auto;
+      }
+    }
+
+    /* Error Message Styling */
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body data-page-type="dine_in">
+  <!-- Loader -->
+  <div id="loader">
+    <svg class="circular" width="48px" height="48px">
+      <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#ffffff" />
+      <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#ff6347" />
+    </svg>
+  </div>
+
+  <!-- Header -->
+  <header role="banner">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="index.html"><img src="img/GrublaneBC-03.png" alt="Grub Lane Logo" style="width: 200px" /></a>
+        <div class="d-flex">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarsExample05">
+          <ul class="navbar-nav ml-auto pl-lg-5 pl-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">About Us</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="dine-in.html">Dine-In Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="take-out.html">Take-Out Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="reservation.html">Table Reservations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+        <a class="nav-link" href="#" id="cart-button"><i class="fa fa-shopping-cart"></i></a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="slider-wrap">
+    <div class="slider-item" style="background-image: url('img/grublane-interior4.jpg');">
+      <div class="container">
+        <div class="row slider-text align-items-center justify-content-center">
+          <div class="col-md-8 text-center col-sm-12">
+            <h1 data-aos="fade-up">Dine-In with Us</h1>
+            <p class="mb-5" data-aos="fade-up" data-aos-delay="100">
+              Take a look at our delicious menu in the restaurant
+            </p>
+            <p data-aos="fade-up" data-aos-delay="200">
+              <a href="reservation.html" class="btn btn-white btn-outline-white">Reserve a Table</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Section -->
+  <section class="section bg-light pt-5 bottom-slant-gray">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-5">
+          <h2 class="text-center">Dine-In Menu</h2>
+        </div>
+        <div class="col-md-12">
+          <!-- Download Button -->
+          <div class="download-button">
+            <a href="https://www.grublanerestaurant.com/images/dinein/dine-in-menu.pdf" target="_blank" download>
+              <i class="fa fa-download"></i> Download Our Menu (PDF)
+            </a>
+          </div>
+
+          <!-- Image Gallery Carousel -->
+          <div class="owl-carousel owl-theme mt-4">
+            <!-- Repeat this block for each image (1.jpg to 10.jpg) -->
+            <!-- Example for 1.jpg to 10.jpg -->
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/1.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/1.jpg" alt="Grub Lane Dine-In Menu Page 1" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/2.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/2.jpg" alt="Grub Lane Dine-In Menu Page 2" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/3.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/3.jpg" alt="Grub Lane Dine-In Menu Page 3" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/4.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/4.jpg" alt="Grub Lane Dine-In Menu Page 4" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/5.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/5.jpg" alt="Grub Lane Dine-In Menu Page 5" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/6.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/6.jpg" alt="Grub Lane Dine-In Menu Page 6" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/7.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/7.jpg" alt="Grub Lane Dine-In Menu Page 7" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/8.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/8.jpg" alt="Grub Lane Dine-In Menu Page 8" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/9.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/9.jpg" alt="Grub Lane Dine-In Menu Page 9" />
+              </a>
+            </div>
+            <div class="item">
+              <a href="https://www.grublanerestaurant.com/images/dinein/10.jpg" class="image-popup">
+                <img src="https://www.grublanerestaurant.com/images/dinein/10.jpg" alt="Grub Lane Dine-In Menu Page 10" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="row mb-5">
+        <div class="col-md-4 mb-5">
+          <ul class="list-unstyled footer-link d-flex footer-social">
+            <li>
+              <a href="https://www.instagram.com/grub_lane_lagos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="p-2"><span class="fa fa-instagram"></span></a>
+              <p>Instagram</p>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-5 mb-5">
+          <div class="mb-5">
+            <h3>Opening Hours</h3>
+            <p>
+              <strong class="d-block font-weight-normal text-black">Everyday of the week <br>Sunday-Saturday</strong>
+              8AM - 10PM
+            </p>
+            <p>
+              <strong class="d-block font-weight-normal text-black">Closed on Tuesdays</strong>
+            </p>
+          </div>
+          <div>
+            <h3>Contact Info</h3>
+            <ul class="list-unstyled footer-link">
+              <li class="d-block">
+                <span class="d-block text-black">Address:</span>
+                <span>19A Sinari Daranijo Street, Victoria Island, Lagos</span>
+              </li>
+              <li class="d-block">
+                <span class="d-block text-black">Phone:</span><span> +234 808 912 8657</span>
+              </li>
+              <li class="d-block">
+                <span class="d-block text-black">Email:</span><span><a href="mailto:grublane@yahoo.com">grublane@yahoo.com</a></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-3 mb-5">
+          <h3>Quick Links</h3>
+          <ul class="list-unstyled footer-link">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="take-out.html">Take-Out</a></li>
+            <li><a href="reservation.html">Reservations</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-md-center text-left">
+          <p>
+            Copyright &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            All rights reserved
+            <i class="fa fa-heart-o" aria-hidden="true"></i>
+            <a href="#" target="_blank">Grub Lane</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/aos.js"></script>
+  <script src="js/jquery.magnific-popup.min.js"></script>
+  <script src="js/magnific-popup-options.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-NiZqfo75OymmN0PbzIpD4xwjq1UijUNV2D7rV3YxXzKt5ZP91EXiG+LlZsU4osjL" crossorigin="anonymous"></script>
+  <!-- Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu48OVpZwEVGRmR73fLmbhj4HgkONw9enOZ2q5hpLxKK3lgkD" crossorigin="anonymous"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-XE7zlKAb1HluVH6SRH3iI2gR8Gix+zjvKR/qQEDvx+fjf7HSE6lj9W9ljvWZadK" crossorigin="anonymous"></script>
+  <!-- Owl Carousel JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-OvRqTty1hNnhFsf1k0jEmR7VzhUMO3qdC16e4do34bll98WVDFxHjIoUMl3yc49uEVQqGAD7hQwP7DqXrq9Zpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Magnific Popup JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js" integrity="sha512-IsI3mOdC47MtFOk6eKrnwFSyE8B8FKsV0wyuzHKjaNHOrVjTqIdzDfmIhFU/TLMG0zK5gHNVhFhVnbjUuw+r3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+  <!-- Custom Scripts -->
+  <script>
+    $(document).ready(function () {
+      // Hide Loader on Page Load
+      $(window).on('load', function () {
+        $('#loader').addClass('hidden');
+      });
+
+      // Cart Button Functionality (Assuming you have side-cart and overlay)
+      $('#cart-button').on('click', function () {
+        $('#side-cart').addClass('active');
+        $('#overlay').addClass('active');
+      });
+
+      $('#side-cart-close, #overlay').on('click', function () {
+        $('#side-cart').removeClass('active');
+        $('#overlay').removeClass('active');
+      });
+
+      // Initialize Owl Carousel for Menu Images
+      $('.owl-carousel').owlCarousel({
+        loop: true,
+        margin: 10,
+        nav: true,
+        dots: true,
+        responsive: {
+          0: {
+            items: 1
+          },
+          600: {
+            items: 2
+          },
+          1000: {
+            items: 3
+          }
+        }
+      });
+
+      $('.image-popup').magnificPopup({
+        type: 'image',
+        gallery: {
+          enabled: true
+        },
+        image: {
+          titleSrc: 'alt'
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

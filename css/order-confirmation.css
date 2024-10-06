@@ -1,0 +1,114 @@
+/* General Body Styling */
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.site-header {
+  background-color: #ff7404;
+  padding: 20px 0;
+}
+
+.site-header .navbar-brand {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.site-logo {
+  max-width: 200px;
+}
+
+/* Order Confirmation Section */
+.order-confirmation {
+  padding: 60px 15px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.order-confirmation h2 {
+  font-size: 2rem;
+  color: #ff7404;
+  margin-bottom: 20px;
+}
+
+.order-confirmation p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.order-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: left;
+  display: inline-block;
+  width: 100%;
+}
+
+.order-details p {
+  font-size: 1rem;
+  color: #333;
+}
+
+.order-details p strong {
+  color: #000;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #ff7404;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #d26104;
+  color: #fff;
+}
+
+/* Footer */
+.site-footer {
+  background-color: #ff7404;
+  padding: 20px 0;
+  color: #fff;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .order-confirmation {
+    padding: 40px 10px;
+  }
+
+  .order-confirmation h2 {
+    font-size: 1.8rem;
+  }
+
+  .order-confirmation p {
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+}

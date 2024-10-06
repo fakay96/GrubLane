@@ -1,0 +1,12 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API Documentation",
+    "description": "API Documentation for the project"
+  },
+  "host": "0.0.0.0:3000",
+  "basePath": "/",
+  "schemes": ["https"],
+  "paths": {}
+}

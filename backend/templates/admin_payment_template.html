@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Payment Notification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        ul li strong {
+            color: #28a745;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #888;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Payment Notification</h1>
+        <p>Dear Admin,</p>
+        <p>A new payment has been recorded:</p>
+        <ul>
+            <li><strong>User Name:</strong> {{recipient_name}}</li>
+            <li><strong>Amount Paid:</strong> ${{amount}}</li>
+            <li><strong>Payment Date:</strong> {{payment_date}}</li>
+            <li><strong>Payment Method:</strong> {{payment_method}}</li>
+        </ul>
+        <p>Please review and process the payment accordingly.</p>
+        <p>Best regards,<br>The Grublane Restaurant Team</p>
+    </div>
+</body>
+</html>

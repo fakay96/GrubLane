@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Grub Lane</title>
+    <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css" />
+    <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/order-confirmation.css">
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="img/favicon-icon" type="image/png" />
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <a class="navbar-brand" href="index.html"><img src="img/GrublaneBC-03.png" alt="grublane logo"
+                            class="site-logo" /></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ORDER CONFIRMATION SECTION -->
+    <section class="order-confirmation">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h2 class="mb-4">Thank You for Your Order!</h2>
+                    <p>Your order has been successfully placed.</p>
+                    <div id="order-details" class="order-details">
+                        <!-- Order details will be inserted here by JavaScript -->
+                    </div>
+                    <button id="downloadBtn" class="btn btn-success mt-4">Download as Image</button>
+                    <a href="index.html" class="btn btn-primary mt-4">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>&copy;
+                        <script>document.write(new Date().getFullYear());</script> Grub Lane. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fetchorder.js"></script>
+    <script>
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            let params = {};
+            window.location.search.substring(1).split("&").forEach(function (pair) {
+                let [key, value] = pair.split("=");
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        // Function to fetch and display order details
+        function displayOrderDetails() {
+            let params = getQueryParams();
+            let orderId = params.orderId;
+
+            if (!orderId) {
+                document.getElementById("order-details").innerHTML = `
+                    <p><strong>Error:</strong> No order ID found.</p>
+                `;
+                return;
+            }
+
+            // Simulated fetchAllOrders function. Replace this with your actual fetching logic
+            fetchAllOrders()
+                .then(orders => {
+                    console.log(orders)
+                    const order = orders.find(order => order.id == orderId);
+
+                    if (order) {
+                        // Parsing order details JSON
+                        let orderDetails = JSON.parse(order.order_details);
+                        let itemsHTML = `
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+
+                        orderDetails.items.forEach(item => {
+                            itemsHTML += `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>₦${item.price * item.quantity}</td>
+                                </tr>
+                            `;
+                        });
+
+                        itemsHTML += `
+                                </tbody>
+                            </table>
+                        `;
+
+                        document.getElementById("order-details").innerHTML = `
+                            <p><strong>Order ID:</strong> ${order.order_number}</p>
+                            <p><strong>Amount Paid:</strong> ₦${order.amount_paid}</p>
+                            <p><strong>Payment Method:</strong> ${order.paystack_reference ? 'Paystack' : 'N/A'}</p>
+                            <div class="order-items">
+                                <h3>Order Details:</h3>
+                                ${itemsHTML}
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById("order-details").innerHTML = `
+                            <p><strong>Error:</strong> Order not found.</p>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("order-details").innerHTML = `
+                        <p><strong>Error:</strong> Unable to fetch order details. Please try again later.</p>
+                    `;
+                    console.error("Error fetching order details:", error);
+                });
+        }
+
+        // Simulate a function that fetches orders. You should replace this with your actual order fetching logic.
+
+        // Download the order confirmation as an image
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            html2canvas(document.querySelector(".order-confirmation")).then(canvas => {
+                let link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'order-confirmation.png';
+                link.click();
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", displayOrderDetails);
+    </script>
+
+    <style>
+        /* Add some basic styles to make the order confirmation look nice */
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .site-header {
+            background-color: #333;
+            padding: 20px 0;
+        }
+
+        .site-logo {
+            width: 200px;
+        }
+
+        .order-confirmation {
+            padding: 60px 0;
+        }
+
+        .order-confirmation h2 {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-details {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .order-items {
+            margin-top: 20px;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-success:hover {
+            background-color: #1e8449;
+        }
+
+        .site-footer {
+            background-color: #333;
+            padding: 20px 0;
+            color: white;
+        }
+
+        .site-footer p {
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .order-item p {
+                font-size: 0.9rem;
+            }
+
+            .btn-primary, .btn-success {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+
+</body>
+
+</html>

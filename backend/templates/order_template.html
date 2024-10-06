@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        ul li strong {
+            color: #28a745;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #888;
+            margin-top: 30px;
+        }
+        .footer a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Order Has Been Confirmed!</h1>
+        <p>Dear {{recipient_name}},</p>
+        <p>Thank you for placing an order with Grublane Restaurant. We have successfully processed your order with the following details:</p>
+        <ul>
+            <li><strong>Order Number:</strong> {{order_number}}</li>
+            <li><strong>Amount Paid:</strong> ${{amount_paid}}</li>
+            <li><strong>Date:</strong> {{order_date}}</li>
+            <li><strong>Payment Method:</strong> {{payment_method}}</li>
+            <li><strong>Order Details:</strong> {{order_details}}</li>
+        </ul>
+        <p>We look forward to serving you again soon. Have a wonderful day!</p>
+        <p>Best regards,<br>The Grublane Restaurant Team</p>
+    </div>
+    <div class="footer">
+        © 2024 Grublane Restaurant | <a href="#">Contact Us</a>
+    </div>
+</body>
+</html>

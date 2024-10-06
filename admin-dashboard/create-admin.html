@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Admin - Admin Dashboard</title>
+    <script src="js/auth-check.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="css/create-admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <link rel="icon" href="../img/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="../img/favicon-icon" type="image/png" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="hamburger-menu">
+        <i class="fas fa-bars" id="sidebarCollapse"></i>
+      </div>
+      <nav id="sidebar">
+        <div class="sidebar-header">
+          <h5>Welcome, <span id="adminUsername">Admin</span></h5>
+        </div>
+        <ul class="components">
+          <li data-page="home">
+            <a href="home.html"
+              ><i class="fas fa-tachometer-alt"></i> <span>Home</span></a
+            >
+          </li>
+          <li data-page="manage-reservations">
+            <a href="manage-reservations.html"
+              ><i class="fas fa-calendar-alt"></i> <span>Reservations</span></a
+            >
+          </li>
+          <li data-page="manage-takeout">
+            <a href="manage-takeout.html"
+              ><i class="fas fa-box"></i> <span>Take-Out Orders</span></a
+            >
+          </li>
+          <li data-page="manage-payments">
+            <a href="manage-payments.html"
+              ><i class="fas fa-money-check-alt"></i><span> Payments</span></a
+            >
+          </li>
+          <li data-page="manage-meals">
+            <a href="manage-meals.html"
+              ><i class="fas fa-utensils"></i> <span>Manage Meals</span></a
+            >
+          </li>
+          <li class="staff-role" data-page="create-admin">
+            <a href="create-admin.html"
+              ><i class="fas fa-user-plus"></i> <span>Create Admin</span></a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div
+            class="container-fluid d-flex justify-content-between align-items-center"
+          >
+            <h4 class="dashboard-title mb-0">Create New Admin</h4>
+          </div>
+        </nav>
+
+        <div class="content-area">
+          <div class="create-admin-container">
+            <h2>Create New Admin</h2>
+            <form id="adminCreateForm">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  class="form-control"
+                  placeholder="Enter username"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  placeholder="Enter email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" class="form-control" required>
+                  <option value="" disabled selected>Select role</option>
+                  <option value="super_admin">Super Admin</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                Create Admin
+              </button>
+            </form>
+            <div id="error-message" class="error-message"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/admin-create.js"></script>
+    <script src="js/admin.js"></script>
+
+    <script>
+      function setActiveMenuItem() {
+        const currentPage = window.location.pathname
+          .split("/")
+          .pop()
+          .replace(".html", "");
+        const menuItems = document.querySelectorAll(
+          "#sidebar ul.components li"
+        );
+
+        menuItems.forEach((item) => {
+          item.classList.remove("active");
+          if (item.dataset.page === currentPage) {
+            item.classList.add("active");
+          }
+        });
+
+        // Special case for the home page
+        if (currentPage === "" || currentPage === "index") {
+          document
+            .querySelector('li[data-page="home"]')
+            .classList.add("active");
+        }
+      }
+
+      // Call the function when the DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        setActiveMenuItem();
+        // ... (other existing DOMContentLoaded event listeners) ...
+      });
+    </script>
+  </body>
+</html>

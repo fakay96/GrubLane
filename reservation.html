@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Grub Lane - Table Reservations</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800|DM+Serif+Display:400,400i&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/animate.css" />
+    <link rel="stylesheet" href="css/owl.carousel.min.css" />
+    <link rel="stylesheet" href="css/aos.css" />
+    <link rel="stylesheet" href="css/magnific-popup.css" />
+    <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css" />
+    <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css" />
+    <link rel="stylesheet" href="css/reservation.css" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="img/favicon-icon" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header role="banner">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="index.html"
+            ><img
+              src="img/GrublaneBC-03.png"
+              alt="grublane logo"
+              style="width: 200px"
+          /></a>
+          <div class="d-flex">
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarsExample05"
+              aria-controls="navbarsExample05"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarsExample05">
+            <ul class="navbar-nav ml-auto pl-lg-5 pl-0">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">About Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="dine-in.html">Dine-In Menu</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="take-out.html">Take-Out Menu</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="reservation.html"
+                  >Table Reservations</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="contact.html">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+          <a class="nav-link" href="#" id="cart-button"
+            ><i class="fa fa-shopping-cart"></i
+          ></a>
+        </div>
+      </nav>
+    </header>
+
+    <section class="banner">
+      <div class="card-container">
+        <div class="card-img"></div>
+        <div class="card-content">
+          <h3>Reservation</h3>
+          <form id="createReservationForm">
+            <div class="form-row">
+              <input
+                type="date"
+                placeholder="Select Date"
+                name="reservation-date"
+                id="date"
+                required
+              />
+              <select name="hours" id="time" required>
+                <option value="" disabled selected>Select Time</option>
+                <option value="8">08:00</option>
+                <option value="9">09:00</option>
+                <option value="10">10:00</option>
+                <option value="11">11:00</option>
+                <option value="12">12:00</option>
+                <option value="13">13:00</option>
+                <option value="14">14:00</option>
+                <option value="15">15:00</option>
+                <option value="16">16:00</option>
+                <option value="17">17:00</option>
+                <option value="18">18:00</option>
+                <option value="19">19:00</option>
+                <option value="20">20:00</option>
+                <option value="21">21:00</option>
+                <option value="22">22:00</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input type="text" id="name" placeholder="Full Name" required />
+              <input
+                type="text"
+                id="phone_number"
+                placeholder="Phone Number"
+                required
+              />
+            </div>
+            <div class="form-row">
+              <input
+                type="email"
+                id="email"
+                placeholder="Email Address"
+                name="email"
+                required
+              />
+            </div>
+            <div class="form-row">
+              <input
+                type="number"
+                id="number_of_guests"
+                placeholder="Number of Guests"
+                min="1"
+                required
+              />
+              <input type="hidden" id="user_id" />
+              <input type="hidden" id="date_time" />
+              <input type="hidden" id="table_number" value="1" />
+              <input type="submit" value="BOOK TABLE" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="side-cart" class="side-cart">
+      <div class="side-cart-header">
+        Your Cart
+        <span id="side-cart-close" class="side-cart-close">&times;</span>
+      </div>
+      <div id="side-cart-items" class="side-cart-items"></div>
+      <div class="side-cart-footer">
+        <h3 id="total-price">Total: N0</h3>
+        <button id="checkout-button">Checkout with Paystack</button>
+      </div>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/magnific-popup-options.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/fetchusers.js"></script>
+    <script src="js/fetchreservations.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("date");
+        const today = new Date();
+        const formatDate = (date) => {
+          let day = ("0" + date.getDate()).slice(-2);
+          let month = ("0" + (date.getMonth() + 1)).slice(-2);
+          return `${date.getFullYear()}-${month}-${day}`;
+        };
+        dateInput.min = formatDate(today);
+    
+        const overlay = document.getElementById("overlay");
+        const notificationTab = document.createElement("div");
+        notificationTab.classList.add("notification-tab");
+        document.body.appendChild(notificationTab);
+    
+        const showOverlay = () => {
+          overlay.style.display = "block";
+        };
+    
+        const hideOverlay = () => {
+          overlay.style.display = "none";
+        };
+    
+        const showNotification = (message) => {
+          notificationTab.textContent = message;
+          notificationTab.style.display = "block";
+          setTimeout(() => {
+            notificationTab.style.display = "none";
+          }, 3000);
+        };
+    
+        document
+          .getElementById("createReservationForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+    
+            showOverlay();
+    
+            const name = document.getElementById("name").value;
+            const phoneNumber = document.getElementById("phone_number").value;
+            const email = document.getElementById("email").value;
+            const tableNumber = 1;
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+            const numberOfGuests = document.getElementById("number_of_guests").value;
+            const dateTime = `${date} ${time}:00`;
+    
+            createUser(email, name, "", phoneNumber)
+              .then((data) => {
+                const userId = data.id;
+                document.getElementById("date_time").value = dateTime;
+                document.getElementById("user_id").value = userId;
+    
+                return createReservation(userId, numberOfGuests, dateTime, tableNumber);
+              })
+              .then((data) => {
+                hideOverlay();
+                if (data) {
+                  showNotification("Reservation created successfully!");
+                }
+                
+              })
+              .catch((error) => {
+                hideOverlay();
+                if (error.response && error.response.status === 409) {
+                  showNotification("Reservation already exists with these details for this time.");
+                } else {
+                  const errorMessage = error.message || "Failed to create reservation. Please try again.";
+                  console.error("Error:", errorMessage);
+                  showNotification(errorMessage);
+                }
+              });
+          });
+      });
+    </script>
+    
+    
+  </body>
+</html>

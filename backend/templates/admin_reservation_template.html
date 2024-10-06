@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Action Notification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        ul li strong {
+            color: #007bff;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #888;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Action Notification</h1>
+        <p>Dear Admin,</p>
+        <p>A new {{action_type}} has been recorded:</p>
+        <ul>
+            <li><strong>User Name:</strong> {{recipient_name}}</li>
+            <li><strong>Date:</strong> {{reservation_date}}</li>
+            <li><strong>Time:</strong> {{reservation_time}}</li>
+            <li><strong>Number of Guests:</strong> {{guest_count}}</li>
+        </ul>
+        <p>Please take the necessary actions.</p>
+        <p>Best regards,<br>The Grublane Restaurant Team</p>
+    </div>
+</body>
+</html>

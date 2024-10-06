@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logout - Admin Dashboard</title>
+    <script src="js/auth-check.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="icon" href="../img/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="../img/favicon-icon" type="image/png" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <nav id="sidebar">
+        <div class="sidebar-header">
+          <h3>Admin Dashboard</h3>
+          <div class="hamburger-menu">
+            <i class="fas fa-bars" id="sidebarCollapse"></i>
+          </div>
+        </div>
+        <ul class="list-unstyled components">
+          <li class="active">
+            <a href="manage-reservations.html"
+              ><i class="fas fa-calendar-alt"></i> <span>Reservations</span></a
+            >
+          </li>
+          <li>
+            <a href="manage-takeout.html"
+              ><i class="fas fa-box"></i> <span>Take-Out Orders</span></a
+            >
+          </li>
+          <li>
+            <a href="manage-payments.html"
+              ><i class="fas fa-money-check-alt"></i><span> Payments</span></a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div
+            class="container-fluid d-flex justify-content-between align-items-center"
+          >
+            <h4 class="dashboard-title mb-0">Logging Out...</h4>
+          </div>
+        </nav>
+
+        <div class="content-area">
+          <div class="dashboard-header">
+            <h2>You have been logged out</h2>
+            <p>Redirecting to login page...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/admin.js"></script>
+
+    <!-- Custom scripts -->
+    <script>
+      // Simulate logging out and redirect to login page
+      setTimeout(() => {
+        window.location.href = "login.html"; // Redirect to login page after 2 seconds
+      }, 2000);
+    </script>
+  </body>
+</html>
