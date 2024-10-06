@@ -142,7 +142,7 @@ def fetch_and_merge_data(reference):
             'payment_date': payment_date,
             'order_date': order_date
         }
-
+        print(merged_data)
         # Delete merged data from Redis after processing
         redis_client.delete(f"transaction:{reference}")
         return merged_data
