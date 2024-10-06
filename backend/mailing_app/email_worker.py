@@ -197,7 +197,7 @@ def email_worker(queue_name):
                     'email': merged_data['email'],
                     'amount_paid': merged_data['amount_paid'],
                     'order_number': merged_data['order_number'],
-                    'order_date': merged_data['order_date'],
+                    'order_date': merged_data['date'],
                     'paystack_reference': merged_data['paystack_reference'],
                     'order_items': merged_data['order_items'],
                     'payment_method': merged_data['payment_method'],
