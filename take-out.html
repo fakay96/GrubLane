@@ -20,274 +20,302 @@
   <link rel="stylesheet" href="css/style.css" />
   <script src="js/cart.js"></script>
 
-
   <link rel="icon" href="img/favicon.png" type="image/png" />
   <link rel="shortcut icon" href="img/favicon-icon" type="image/png" />
- <style>
-  /* General Styles */
-body {
-  font-family: 'Open Sans', sans-serif;
-  background-color: #f4f4f9;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Section and Footer Styles */
-.section.bg-light {
-  background: linear-gradient(135deg, #f9f9f9 30%, #ececec 100%);
-  padding-top: 60px;
-  padding-bottom: 60px;
-  flex: 1; /* Ensures that the section takes up remaining space */
-}
+    /* Section and Footer Styles */
+    .section.bg-light {
+      background: linear-gradient(135deg, #f9f9f9 30%, #ececec 100%);
+      padding-top: 60px;
+      padding-bottom: 60px;
+      flex: 1;
+    }
 
+    footer p {
+      margin: 0;
+    }
 
+    /* Fancy Table Styles */
+    .table {
+      width: 100%;
+      margin-bottom: 1rem;
+      color: #212529;
+      border-collapse: separate;
+      border-spacing: 0 15px;
+      background-color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      overflow: hidden;
+    }
 
-footer p {
-  margin: 0;
-}
+    .table th {
+      background: linear-gradient(45deg, #ff6347, #ff4500);
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 1.5rem;
+      font-family: 'DM Serif Display', serif;
+    }
 
-/* Fancy Table Styles */
-.table {
-  width: 100%;
-  margin-bottom: 1rem;
-  color: #212529;
-  border-collapse: separate;
-  border-spacing: 0 15px; /* Space between rows */
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
-  overflow: hidden; /* Prevents border-radius cutoff */
-}
+    .table th:first-child {
+      border-top-left-radius: 15px;
+    }
 
-.table th {
-  background: linear-gradient(45deg, #ff6347, #ff4500);
-  color: white;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 1.5rem;
-  font-family: 'DM Serif Display', serif;
-}
+    .table th:last-child {
+      border-top-right-radius: 15px;
+    }
 
-.table th:first-child {
-  border-top-left-radius: 15px;
-}
+    .table td {
+      padding: 1.2rem;
+      background-color: #f9f9f9;
+      color: #333;
+      font-family: 'Open Sans', sans-serif;
+      vertical-align: middle;
+      transition: background-color 0.3s ease;
+      border: none;
+    }
 
-.table th:last-child {
-  border-top-right-radius: 15px;
-}
+    .table tr:hover td {
+      background-color: #f5f5f5;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
 
-.table td {
-  padding: 1.2rem;
-  background-color: #f9f9f9;
-  color: #333;
-  font-family: 'Open Sans', sans-serif;
-  vertical-align: middle;
-  transition: background-color 0.3s ease;
-  border: none;
-}
+    .table img {
+      max-width: 80px;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
 
-.table tr:hover td {
-  background-color: #f5f5f5;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
+    .table img:hover {
+      transform: scale(1.1);
+    }
 
-.table img {
-  max-width: 80px;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
+    @media (max-width: 768px) {
+      .table th,
+      .table td {
+        font-size: 14px;
+        padding: 1rem;
+      }
+    }
 
-.table img:hover {
-  transform: scale(1.1);
-}
+    @media (max-width: 576px) {
+      .table {
+        font-size: 12px;
+      }
 
-@media (max-width: 768px) {
-  .table th, .table td {
-    font-size: 14px;
-    padding: 1rem;
-  }
-}
+      .table img {
+        max-width: 60px;
+      }
+    }
 
-@media (max-width: 576px) {
-  .table {
-    font-size: 12px;
-  }
-  .table img {
-    max-width: 60px;
-  }
-}
+    /* Filter Button Styles */
+    .filter-btn {
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
 
-/* Filter Button Styles */
-.filter-btn {
-  background-color: #ff6347;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
+    .filter-btn:hover {
+      background-color: #ff4d4d;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
 
-.filter-btn:hover {
-  background-color: #ff4d4d;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
+    /* Action Button Styles */
+    .table button {
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
 
-/* Action Button Styles */
-.table button {
-  background-color: #ff6347;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
+    .table button:hover {
+      background-color: #ff4500;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
 
-.table button:hover {
-  background-color: #ff4500;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
 
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 50%;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
 
-.modal-content {
-  background-color: white;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 50%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-.form-group {
-  margin-bottom: 15px;
-}
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+    .submit-btn {
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-.submit-btn {
-  background-color: #ff6347;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    .submit-btn:hover {
+      background-color: #ff4d4d;
+    }
 
-.submit-btn:hover {
-  background-color: #ff4d4d;
-}
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      cursor: pointer;
+    }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 30px;
-  cursor: pointer;
-}
-/* Grid Layout for the Menu Items */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
-  gap: 20px; /* Space between items */
-  margin-bottom: 40px;
-}
+    /* Grid Layout for the Menu Items */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
 
-.menu-item {
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    .menu-item {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-.menu-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
+    .menu-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
 
-.menu-item img {
-  max-width: 100%;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
+    .menu-item img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
 
-.menu-item h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #333;
-  font-family: 'DM Serif Display', serif;
-}
+    .menu-item h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
+      font-family: 'DM Serif Display', serif;
+    }
 
-.menu-item p {
-  margin-bottom: 10px;
-  color: #666;
-  font-size: 14px;
-}
+    .menu-item p {
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 14px;
+    }
 
-.menu-item button {
-  background-color: #ff6347;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
+    .menu-item button {
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
 
-.menu-item button:hover {
-  background-color: #ff4500;
-  transform: translateY(-3px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-}
+    .menu-item button:hover {
+      background-color: #ff4500;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .menu-item h3 {
-    font-size: 16px;
-  }
-  .menu-item p {
-    font-size: 12px;
-  }
-  .menu-item button {
-    padding: 8px 16px;
-  }
-}
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .menu-item h3 {
+        font-size: 16px;
+      }
 
-@media (max-width: 576px) {
-  .menu-item img {
-    max-width: 100px;
-  }
-}
+      .menu-item p {
+        font-size: 12px;
+      }
 
+      .menu-item button {
+        padding: 8px 16px;
+      }
+    }
 
- </style>
+    @media (max-width: 576px) {
+      .menu-item img {
+        max-width: 100px;
+      }
+    }
+
+    /* Modal Styles for mobile responsiveness */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 80%;
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .modal-content {
+        width: 90%;
+        margin: 10% auto;
+        padding: 5px;
+      }
+
+      .form-group input {
+        padding: 8px;
+      }
+
+      .submit-btn {
+        padding: 8px 15px;
+      }
+
+      .close {
+        font-size: 25px;
+      }
+    }
+  </style>
 </head>
 
 <body data-page-type="take_out">
@@ -297,12 +325,10 @@ footer p {
         <a class="navbar-brand" href="index.html">
           <img src="img/GrublaneBC-03.png" alt="grublane logo" style="width: 200px" />
         </a>
-        <!-- Hamburger Menu Button for Mobile -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05"
           aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarsExample05">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -325,7 +351,6 @@ footer p {
             </li>
           </ul>
         </div>
-        <!-- Cart Button -->
         <a class="nav-link" href="#" id="cart-button">
           <i class="fa fa-shopping-cart"></i>
         </a>
@@ -334,18 +359,18 @@ footer p {
   </header>
 
   <div class="slider-wrap">
-    <div class="slider-item" style="background-image: url('img/grublane-interior4.jpg'); background-size: cover; background-position: center;">
+    <div class="slider-item"
+      style="background-image: url('img/grublane-interior4.jpg'); background-size: cover; background-position: center;">
       <div class="container">
         <div class="row slider-text align-items-center justify-content-center" data-aos="fade-up">
           <div class="col-md-8 text-center col-sm-12">
-            <h1 class="display-4" style="color: #fff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">Explore <br />Our Take-Out Menu</h1>
+            <h1 class="display-4" style="color: #fff; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">Explore <br />Our
+              Take-Out Menu</h1>
           </div>
         </div>
       </div>
     </div>
   </div>
- 
-
 
   <section class="section bg-light pt-5 bottom-slant-gray">
     <div class="container">
@@ -354,18 +379,14 @@ footer p {
           <h2 class="text-center">Take-Out Menu</h2>
         </div>
         <div class="col-md-12" data-aos="fade-left">
-          <!-- Filter Section -->
           <div id="filter-container" class="text-center mb-4">
             <button class="filter-btn" data-category="all">All</button>
           </div>
-          <!-- Menu Grid Container -->
-          <div class="menu-grid" id="menu-container"></div> <!-- Change this from table to a div grid -->
+          <div class="menu-grid" id="menu-container"></div>
         </div>
       </div>
     </div>
   </section>
-  
-  
 
   <div id="side-cart" class="side-cart">
     <div class="side-cart-header">
@@ -386,7 +407,9 @@ footer p {
         <div class="col-md-4 mb-5">
           <ul class="list-unstyled footer-link d-flex footer-social">
             <li>
-              <a href="https://www.instagram.com/grub_lane_lagos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="p-2"><span class="fa fa-instagram"></span></a>
+              <a
+                href="https://www.instagram.com/grub_lane_lagos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                class="p-2"><span class="fa fa-instagram"></span></a>
               <p>Instagram</p>
             </li>
           </ul>
@@ -413,7 +436,8 @@ footer p {
                 <span class="d-block text-black">Phone:</span><span> +234 808 912 8657</span>
               </li>
               <li class="d-block">
-                <span class="d-block text-black">Email:</span><span><a href="mailto:grublane@yahoo.com">grublane@yahoo.com</a></span>
+                <span class="d-block text-black">Email:</span><span><a
+                    href="mailto:grublane@yahoo.com">grublane@yahoo.com</a></span>
               </li>
             </ul>
           </div>
@@ -436,8 +460,7 @@ footer p {
             Copyright &copy;
             <script>
               document.write(new Date().getFullYear());
-            </script>
-            All rights reserved
+            </script> All rights reserved
             <i class="fa fa-heart-o" aria-hidden="true"></i>
             <a href="#" target="_blank">Grub Lane</a>
           </p>
@@ -445,6 +468,7 @@ footer p {
       </div>
     </div>
   </footer>
+
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/jquery.easing.1.3.js"></script>
@@ -460,11 +484,11 @@ footer p {
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
+
     function gtag() {
       dataLayer.push(arguments);
     }
     gtag("js", new Date());
-
     gtag("config", "UA-23581568-13");
   </script>
 
@@ -489,63 +513,66 @@ footer p {
     // Checkout with Paystack
     document.getElementById("checkout-button").addEventListener("click", function () {
       cart = getCart(); // Retrieve the cart contents
-    
+
       if (cart.length === 0) {
         alert("No items in cart. Please add items before checking out.");
         return;
       }
-    
+
+      // Close the cart and overlay
+      document.getElementById("side-cart").classList.remove("active");
+      document.getElementById("overlay").classList.remove("active");
+
       // Calculate total amount and other required data
       let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       let userEmail = localStorage.getItem("userEmail") || "user@example.com";
       let orderId = "ORDER_" + new Date().getTime();
-    
+
       // Show the modal to collect user details before proceeding to payment
-      document.getElementById("checkout-modal").style.display = "block"; // Display the modal
+      document.getElementById("checkout-modal").style.display = "block";
     });
-    
+
     // Close modal when clicking on the close button
     document.querySelector(".close").addEventListener("click", function () {
-      document.getElementById("checkout-modal").style.display = "none"; // Hide the modal
+      document.getElementById("checkout-modal").style.display = "none";
     });
-    
+
     // Close modal when clicking outside the modal content
     window.onclick = function (event) {
       const modal = document.getElementById("checkout-modal");
       if (event.target == modal) {
-        modal.style.display = "none"; // Hide the modal
+        modal.style.display = "none";
       }
     };
-    
+
     // Handle form submission for user details and then trigger Paystack payment
     document.getElementById("checkout-form").addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent form from submitting traditionally
-    
+      event.preventDefault();
+
       // Get user input values from the form
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
       const address = document.getElementById("address").value;
       const phoneNumber = document.getElementById("phoneNumber").value;
-    
+
       if (!name || !email || !address || !phoneNumber) {
         alert("All fields are required!");
         return;
       }
-    
+
       const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const orderId = "ORDER_" + new Date().getTime();
-      const cartItems = getCart(); // Get the cart again just in case
-    
+      const cartItems = getCart();
+
       document.getElementById("checkout-modal").style.display = "none";
       console.log(email);
-    
+
       payWithPaystack(totalAmount, email, orderId, cartItems, {
         name: name,
         address: address,
         phoneNumber: phoneNumber,
       });
     });
-    
 
     // Animate on scroll library init
     AOS.init({
@@ -562,92 +589,33 @@ footer p {
     // Initialize the cart and event listeners when the page loads
     document.addEventListener("DOMContentLoaded", init);
   </script>
-<!-- Modal for user details -->
-<div id="checkout-modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Checkout Details</h2>
-    <form id="checkout-form">
-      <div class="form-group">
+
+  <!-- Modal for user details -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Checkout Details</h2>
+      <form id="checkout-form">
+        <div class="form-group">
           <label for="name">Name:</label>
           <input type="text" id="name" name="name" required placeholder="Enter your name">
-      </div>
-      <div class="form-group">
+        </div>
+        <div class="form-group">
           <label for="email">Email:</label>
           <input type="email" id="email" name="email" required placeholder="Enter your email">
-      </div>
-      <div class="form-group">
+        </div>
+        <div class="form-group">
           <label for="address">Address:</label>
           <input type="text" id="address" name="address" required placeholder="Enter your address">
-      </div>
-      <div class="form-group">
+        </div>
+        <div class="form-group">
           <label for="phoneNumber">Phone Number:</label>
           <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter your phone number">
-      </div>
-      <button type="submit" id="submit-details" class="submit-btn">Proceed to Payment</button>
-  </form>
-  
+        </div>
+        <button type="submit" id="submit-details" class="submit-btn">Proceed to Payment</button>
+      </form>
+    </div>
   </div>
-</div>
-
-<!-- Style for Modal -->
-<style>
-  /* Modal Styles */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-
-  .modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    text-align: center;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
-  .submit-btn {
-    background-color: #ff6347;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .submit-btn:hover {
-    background-color: #ff4d4d;
-  }
-
-  .close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 30px;
-    cursor: pointer;
-  }
-</style>
 
 </body>
 

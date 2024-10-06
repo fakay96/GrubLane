@@ -42,7 +42,6 @@ function renderMenu(dishes, takeOut, menuContainer) {
 
       menuHtml += `
         <div class="menu-item" data-category="${item.subcategory.toLowerCase()}">
-          <img src="${item.imageUrl}" alt="${item.name}">
           <h3>${item.name}</h3>
           <p><strong>N${item.price}</strong></p>
           <p class="rating" data-dish-id="${item.id}" data-average-rating="${item.average_rating || 0}">
