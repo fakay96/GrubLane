@@ -88,7 +88,6 @@
             // Simulated fetchAllOrders function. Replace this with your actual fetching logic
             fetchAllOrders()
                 .then(orders => {
-                    console.log(orders)
                     const order = orders.find(order => order.id == orderId);
 
                     if (order) {
@@ -144,15 +143,22 @@
                 });
         }
 
-        // Simulate a function that fetches orders. You should replace this with your actual order fetching logic.
-
         // Download the order confirmation as an image
         document.getElementById('downloadBtn').addEventListener('click', function () {
-            html2canvas(document.querySelector(".order-confirmation")).then(canvas => {
+            // Use html2canvas to capture the order confirmation section
+            html2canvas(document.querySelector(".order-confirmation"), {
+                scrollX: 0, // Ensures the entire element is captured
+                scrollY: -window.scrollY, // Ensures the current scrolled position is considered
+                width: document.querySelector(".order-confirmation").scrollWidth, // Capture full width
+                height: document.querySelector(".order-confirmation").scrollHeight // Capture full height
+            }).then(function (canvas) {
+                // Convert canvas to image and trigger download
                 let link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 link.download = 'order-confirmation.png';
-                link.click();
+                document.body.appendChild(link); // Append link to the body
+                link.click(); // Programmatically trigger the download
+                document.body.removeChild(link); // Remove link after download
             });
         });
 
@@ -161,7 +167,6 @@
 
     <style>
         /* Add some basic styles to make the order confirmation look nice */
-
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f9;
