@@ -209,7 +209,10 @@ def email_worker(queue_name):
                     'order_items': merged_data['order_items'],
                     'payment_method': merged_data['payment_method'],
                     'payment_status': merged_data['payment_status'],
-                    'payment_date': merged_data['payment_date']
+                    'payment_date': merged_data['payment_date'],
+                    'receipient_email':merged_data['email']
+                    
+
                 }
 
                 recipient_email = merged_data['email']
