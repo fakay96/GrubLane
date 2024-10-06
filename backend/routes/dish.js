@@ -5,6 +5,7 @@ const sqlite3 = require("sqlite3").verbose();
 const router = express.Router();
 const databasePath = process.env.DATABASE_PATH;
 
+const db = new sqlite3.Database(databasePath);
 
 // Define storage for multer
 const storage = multer.diskStorage({
