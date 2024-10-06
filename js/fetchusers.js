@@ -15,7 +15,6 @@ function createUser(email, name, address = "", phoneNumber = "") {
     body: JSON.stringify(userData),
   })
     .then((response) => {
-      console.log(`Response Status: ${response.status}`);
 
       if (response.status === 200 || response.status === 201) {
         return response.json();
@@ -53,8 +52,7 @@ function fetchAllUsers() {
     })
     .then((data) => {
       const users = data.users;
-      console.log("Fetched users:", users);
-      // Optionally, render users to the DOM
+    
     })
     .catch((error) => {
       console.error("Error fetching users:", error.message);

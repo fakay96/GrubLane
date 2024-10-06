@@ -33,7 +33,6 @@ function createOrder(
       }
     })
     .then((data) => {
-      console.log("Order created successfully with ID:", data.id);
     })
     .catch((error) => {
       console.error("Error creating order:", error.message);

@@ -12,7 +12,6 @@ function payWithPaystack(amount, email, userId, cartItems) {
         currency: "NGN",
         ref: orderId,
         callback: function (response) {
-          console.log(response);
           if (response.status === "success") {
             fetch("https://grublanerestaurant.com/api/payments/createPayments", {
               method: "POST",

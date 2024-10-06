@@ -81,14 +81,11 @@ function payWithPaystack(totalAmount, userEmail, cartItems, userDetails) {
       // 1. First create or fetch the user
       createUser(userEmail, userDetails.name, userDetails.address, userDetails.phoneNumber)
         .then((userData) => {
-          console.log(userData);
           const userId = userData.id;
-          console.log("User created or found, User ID:", userId);
 
           // 2. Then create the order with the user's ID and the Paystack reference
           createOrder(userId, totalAmount, new Date().toISOString(), cartItems, response.reference)
             .then((orderData) => {
-              console.log("Order created, Order ID:", orderData.id);
 
               // 3. Finally, record the payment
               recordPayment(response.reference, userEmail, totalAmount, orderData.id);
@@ -128,7 +125,6 @@ function createUser(email, name, address, phoneNumber) {
     body: JSON.stringify(userData),
   })
     .then((response) => {
-      console.log(`Response Status: ${response.status}`);
 
       if (response.status === 200 || response.status === 201) {
         return response.json(); // Successful creation

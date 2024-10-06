@@ -1,5 +1,4 @@
 async function fetchMenuData(menuType) {
-  console.log(menuType);
   const takeOut = menuType === "take_out" ? true : false;
 
   let endpointUrl = `https://grublanerestaurant.com/api/dish/getDishes?take_out=${takeOut}`;
@@ -8,7 +7,6 @@ async function fetchMenuData(menuType) {
 
   try {
     while (endpointUrl) {
-      console.log("Fetching menu from: ", endpointUrl);
       const response = await fetch(endpointUrl);
 
       if (!response.ok) {
@@ -16,7 +14,6 @@ async function fetchMenuData(menuType) {
       }
 
       const data = await response.json();
-      console.log("Menu data: ", data);
 
       allDishes = allDishes.concat(data.dishes);
 
@@ -34,55 +31,39 @@ async function fetchMenuData(menuType) {
 
 function renderMenu(dishes, takeOut, menuContainer) {
   let menuHtml = "";
+  let allCategories = new Set(); // To collect unique categories
 
   if (!dishes || dishes.length === 0) {
-    menuHtml = `
-      <div class="text-center">
-        <h2>No menu items available</h2>
-        <p>We couldn't find any menu items at the moment for this type. Please try again later.</p>
-      </div>`;
+    menuHtml = `<div class="menu-item"><h3 class="text-center">No menu items available</h3></div>`;
   } else {
-    const groupedMenu = {};
-    dishes.forEach((dish) => {
-      const { subcategory, average_rating, id } = dish;
-      if (!groupedMenu[subcategory]) {
-        groupedMenu[subcategory] = [];
-      }
-      groupedMenu[subcategory].push({ ...dish, average_rating });
-    });
+    dishes.forEach((item) => {
+      // Collect unique categories
+      allCategories.add(item.subcategory);
 
-    for (const subcategory in groupedMenu) {
-      const subcategoryId = subcategory.replace(/\s+/g, "-").toLowerCase();
       menuHtml += `
-        <section class="menu-section">
-          <h3 class="menu-category" onclick="toggleMenu('${subcategoryId}')">${subcategory}</h3>
-          <div class="menu-items" id="${subcategoryId}" style="display: none; transition: all 0.3s ease;">`; // Smooth transition for menu items
-
-      groupedMenu[subcategory].forEach((item) => {
-        menuHtml += `
-          <article class="menu-item-card">
-            <div class="menu-item fancy-card">
-              ${takeOut ? `
-                <div class="menu-item-image">
-                  <img src="${item.image_url || 'default-image.jpg'}" alt="${item.name}" class="menu-image" />
-                </div>` : ""}
-              <h5 class="menu-item-name">${item.name}</h5>
-              <p class="price"><strong>N${item.price}</strong></p>
-              <button class="add-to-cart-btn" data-item="${item.name}" data-price="${item.price}">Add to Cart</button>
-              <div class="rating" data-dish-id="${item.id}" data-average-rating="${item.average_rating || 0}">
-                ${generateStarRating(item.average_rating || 0)}
-              </div>
-            </div>
-          </article>`;
-      });
-
-      menuHtml += `</div></section>`;
-    }
+        <div class="menu-item" data-category="${item.subcategory.toLowerCase()}">
+          <img src="${item.imageUrl}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p><strong>N${item.price}</strong></p>
+          <p class="rating" data-dish-id="${item.id}" data-average-rating="${item.average_rating || 0}">
+            ${generateStarRating(item.average_rating || 0)}
+          </p>
+          <button class="add-to-cart-btn" data-item="${item.name}" data-price="${item.price}">
+            Add to Cart
+          </button>
+        </div>`;
+    });
   }
 
+  // Set the inner HTML for the grid container
   menuContainer.innerHTML = menuHtml;
+
+  // Render the filter buttons dynamically
+  renderFilters([...allCategories]);
+
+  // Attach cart functionality and rating functionality
   addCartFunctionality();
-  addRatingFunctionality();
+  addRatingFunctionality(); // Attach rating event listeners
 }
 
 function generateStarRating(rating) {
@@ -92,15 +73,6 @@ function generateStarRating(rating) {
     starHtml += `<i class="${starClass}" aria-hidden="true" data-rating="${i}"></i>`;
   }
   return starHtml;
-}
-
-function toggleMenu(subcategoryId) {
-  const menuItems = document.getElementById(subcategoryId);
-  if (menuItems.style.display === "none" || menuItems.style.display === "") {
-    menuItems.style.display = "grid"; // Show menu items as grid
-  } else {
-    menuItems.style.display = "none"; // Hide menu items
-  }
 }
 
 function addRatingFunctionality() {
@@ -121,37 +93,10 @@ function addRatingFunctionality() {
       const dishId = this.parentElement.getAttribute("data-dish-id");
       const rating = parseInt(this.getAttribute("data-rating"));
 
-      fetch(`https://grublanerestaurant.com/api/dish/createDish/${dishId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ rating }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to submit rating");
-          }
-          return response.json();
-        })
-        .then(() => {
-          alert("Your feedback has been submitted.");
-          updateDishRating(dishId, rating); // Update only the specific dish rating
-        })
-        .catch((error) => {
-          alert("Failed to submit rating. Please try again later.");
-          console.error("Error submitting rating:", error);
-        });
+      // Make an API call to submit the rating
+      submitRating(dishId, rating, this.parentElement);
     });
   });
-}
-
-function updateDishRating(dishId, newRating) {
-  const ratingElement = document.querySelector(`[data-dish-id="${dishId}"]`);
-  if (ratingElement) {
-    ratingElement.setAttribute('data-average-rating', newRating);
-    updateStars(newRating, ratingElement);
-  }
 }
 
 function updateStars(rating, ratingElement) {
@@ -161,6 +106,64 @@ function updateStars(rating, ratingElement) {
   });
 }
 
+function submitRating(dishId, rating, ratingElement) {
+  fetch(`https://grublanerestaurant.com/api/dish/rateDish/${dishId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ rating }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to submit rating");
+      }
+      return response.json();
+    })
+    .then(() => {
+      alert("Your feedback has been submitted.");
+      // Update the average rating and re-render stars
+      ratingElement.setAttribute("data-average-rating", rating);
+      updateStars(rating, ratingElement);
+    })
+    .catch((error) => {
+      alert("Failed to submit rating. Please try again later.");
+      console.error("Error submitting rating:", error);
+    });
+}
+
+function renderFilters(categories) {
+  const filterContainer = document.getElementById("filter-container");
+  let filterHtml = `<button class="filter-btn" data-category="all">All</button>`;
+
+  categories.forEach((category) => {
+    filterHtml += `<button class="filter-btn" data-category="${category.toLowerCase()}">${category}</button>`;
+  });
+
+  filterContainer.innerHTML = filterHtml;
+
+  // Attach click event listeners to filter buttons
+  document.querySelectorAll(".filter-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const category = this.getAttribute("data-category");
+      filterMenuByCategory(category);
+    });
+  });
+}
+
+function filterMenuByCategory(category) {
+  const items = document.querySelectorAll(".menu-item");
+
+  items.forEach((item) => {
+    const itemCategory = item.getAttribute("data-category");
+
+    if (category === "all" || itemCategory === category) {
+      item.style.display = "block"; // Show matching items
+    } else {
+      item.style.display = "none"; // Hide non-matching items
+    }
+  });
+}
 function addCartFunctionality() {
   document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
     button.addEventListener("click", function () {

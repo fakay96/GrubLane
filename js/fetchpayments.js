@@ -95,8 +95,6 @@ function changePage(page) {
 }
 
 function viewPaymentDetails(paymentId) {
-  // Implement this function to show detailed payment information
-  console.log("Viewing details for payment:", paymentId);
 }
 
 function updateHomePagePaymentCount(count) {
