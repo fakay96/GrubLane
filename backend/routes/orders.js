@@ -3,12 +3,15 @@ const sqlite3 = require("sqlite3").verbose();
 const router = express.Router();
 const databasePath = process.env.DATABASE_PATH;
 const redis = require("redis");
-
-
 const ORDER_QUEUE = process.env.ORDER_QUEUE;
+
+
 const redisClient = redis.createClient({
   url: 'redis://localhost:6379' // Adjust as necessary for your setup
 });
+
+redisClient.connect().catch(err => console.error('Redis Client Error', err));
+
 /**
  * @swagger
  * /api/orders:
