@@ -4,12 +4,12 @@ const router = express.Router();
 const databasePath = process.env.DATABASE_PATH;
 const redis = require("redis");
 
+
+const PAYMENT_QUEUE = process.env.PAYMENT_QUEUE;
+
 const redisClient = redis.createClient({
   url: 'redis://localhost:6379' // Adjust as necessary for your setup
 });
-const PAYMENT_QUEUE = process.env.PAYMENT_QUEUE;
-
-
 redisClient.connect().catch(err => console.error('Redis Client Error', err));
 /**
  * @swagger

@@ -4,11 +4,11 @@ const router = express.Router();
 const databasePath = process.env.DATABASE_PATH;
 const redis = require("redis");
 
+
+const ORDER_QUEUE = process.env.ORDER_QUEUE;
 const redisClient = redis.createClient({
   url: 'redis://localhost:6379' // Adjust as necessary for your setup
 });
-const ORDER_QUEUE = process.env.ORDER_QUEUE;
-
 /**
  * @swagger
  * /api/orders:
