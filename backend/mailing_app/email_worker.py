@@ -24,7 +24,7 @@ ORDER_QUEUE = os.getenv('ORDER_QUEUE')
 ADMIN_EMAIL = "grublane@yahoo.com"  # Admin email address for notifications
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'templates')
 
-# Update the template map for orders
+# Update the template map for orders, payments, and reservations
 QUEUE_TEMPLATE_MAP = {
     RESERVATION_QUEUE: 'reservation_template.html',
     PAYMENT_QUEUE: 'payment_template.html',
@@ -105,42 +105,31 @@ def email_worker(queue_name):
             task_data = json.loads(task_data)
             print(task_data)
 
-            # Handle context for different queues
-            if queue_name == RESERVATION_QUEUE:
-                context = {
-                    'recipient_name': task_data['name'],
-                    'reservation_date': task_data['date_time'].split()[0],  # Extract date part
-                    'reservation_time': task_data['date_time'].split()[1],  # Extract time part
-                    'guest_count': task_data['number_of_guests']
-                }
-                subject = "Reservation Confirmation"
-                recipient_email = task_data['email']
+            # Unified context for reservations, payments, and orders
+            context = {
+                'recipient_name': task_data.get('name'),
+                'recipient_address': task_data.get('address'),
+                'recipient_phonenumber': task_data.get('phone_number'),
+                'email': task_data.get('email'),  # Common field for all
+                'amount_paid': task_data.get('amount_paid', 'N/A'),  # For payments and orders
+                'order_number': task_data.get('order_number', 'N/A'),  # For orders
+                'order_date': task_data.get('date', 'N/A'),  # For orders and reservations
+                'paystack_reference': task_data.get('paystack_reference', 'N/A'),  # For payments and orders
+                'order_items': task_data.get('order_details', []),  # For orders
+                'guest_count': task_data.get('guest_count', 'N/A'),  # For reservations
+                'reservation_date': task_data.get('date_time', '').split()[0] if queue_name == RESERVATION_QUEUE else 'N/A',
+                'reservation_time': task_data.get('date_time', '').split()[1] if queue_name == RESERVATION_QUEUE else 'N/A'
+            }
 
-            elif queue_name == PAYMENT_QUEUE:
-                context = {
-                    'recipient_name': task_data['name'],
-                    'amount': task_data['amount'],
-                    'payment_date': task_data['payment_date'],
-                    'payment_method': task_data['payment_method']
-                }
-                subject = "Payment Confirmation"
-                recipient_email = task_data['email']
-
-            elif queue_name == ORDER_QUEUE:
-                # New context for orders including user details and order details
-
-                context = {
-                    'recipient_name': task_data["name"],
-                    'recipient_address': task_data["address"],
-                    'recipient_phonenumber': task_data["phone_number"],
-                    'amount_paid': task_data['amount_paid'],
-                    'order_number': task_data['order_number'],
-                    'order_date': task_data['date'],
-                    'paystack_reference': task_data.get('paystack_reference', 'N/A'),
-                    'order_items': task_data['order_details']  # Ensure order_details contains the list of items
-                }
+            # Subject based on the queue name
+            if queue_name == ORDER_QUEUE:
                 subject = "Order Confirmation"
-                recipient_email = task_data['userDetails']["email"]  # Email should come from userDetails
+            elif queue_name == PAYMENT_QUEUE:
+                subject = "Payment Confirmation"
+            else:  # RESERVATION_QUEUE
+                subject = "Reservation Confirmation"
+
+            recipient_email = task_data.get('email')  # Use the same email field for all
 
             body = render_template(template, context)
 
