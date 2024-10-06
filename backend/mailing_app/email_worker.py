@@ -130,9 +130,9 @@ def email_worker(queue_name):
                 # New context for orders including user details and order details
 
                 context = {
-                    'recipient_name': task_data['userDetails']["name"],
-                    'recipient_address': task_data['userDetails']["address"],
-                    'recipient_phonenumber': task_data['userDetails']["phone_number"],
+                    'recipient_name': task_data["name"],
+                    'recipient_address': task_data["address"],
+                    'recipient_phonenumber': task_data["phone_number"],
                     'amount_paid': task_data['amount_paid'],
                     'order_number': task_data['order_number'],
                     'order_date': task_data['date'],
