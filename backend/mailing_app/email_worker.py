@@ -197,13 +197,14 @@ def email_worker(queue_name):
                     'email': merged_data['email'],
                     'amount_paid': merged_data['amount_paid'],
                     'order_number': merged_data['order_number'],
-                    'order_date': merged_data['date'],
+                    'order_date': merged_data['order_date'],
                     'paystack_reference': merged_data['paystack_reference'],
                     'order_items': merged_data['order_items'],
                     'payment_method': merged_data['payment_method'],
                     'payment_status': merged_data['payment_status'],
                     'payment_date': merged_data['payment_date']
                 }
+                print(context)
 
                 # Determine the subject based on available data
                 if queue_name == ORDER_QUEUE and not merged_data.get('payment_date'):
