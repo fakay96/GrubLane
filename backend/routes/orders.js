@@ -123,23 +123,22 @@ router.post("/", (req, res) => {
           redisClient.rPush(ORDER_QUEUE, JSON.stringify(orderData))
             .then(() => {
               console.log("Order details sent to queue:", orderData);
+              // Send a successful response only after Redis queue operation
+              res.status(201).json({ id: this.lastID });
             })
             .catch(err => {
               console.error("Failed to add order to queue:", err);
               return res.status(500).json({ error: "Failed to process order." });
             });
 
-          // Send a successful response
-          res.status(201).json({ id: this.lastID });
+          // Close the database connection
+          db.close((err) => {
+            if (err) {
+              console.error("Error closing database connection:", err.message);
+            }
+          });
         }
       );
-
-      // Close the database connection
-      db.close((err) => {
-        if (err) {
-          console.error("Error closing database connection:", err.message);
-        }
-      });
     });
   });
 });

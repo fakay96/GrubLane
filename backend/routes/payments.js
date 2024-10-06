@@ -97,50 +97,55 @@ router.post("/createPayments", (req, res) => {
 
   let db = new sqlite3.Database(databasePath);
   let sql = `INSERT INTO Payments (order_id, amount, payment_date, payment_method, status, paystack_refnumber) VALUES (?, ?, ?, ?, ?, ?)`;
-  let paymentDetails={
-    order_id,
-      amount,
-      payment_date,
-      payment_method,
-      status,
-      paystack_refnumber
 
-  }
+  let paymentDetails = {
+    order_id,
+    amount,
+    payment_date,
+    payment_method,
+    status,
+    paystack_refnumber,
+  };
+
   db.run(
     sql,
-    [
-      order_id,
-      amount,
-      payment_date,
-      payment_method,
-      status,
-      paystack_refnumber,
-    ],
+    [order_id, amount, payment_date, payment_method, status, paystack_refnumber],
     function (err) {
       if (err) {
         return res.status(500).json({ error: "Error creating payment" });
       }
-      redisClient.rPush(PAYMENT_QUEUE, JSON.stringify(paymentDetails))
-            .then(() => {
-              console.log("Reservation details sent to queue:", paymentDetails);
-            })
-            .catch(err => {
-              console.error("Failed to add reservation to queue:", err);
-            });
-      res.status(201).json({
-        id: this.lastID,
-        order_id,
-        amount,
-        payment_date,
-        payment_method,
-        status,
-        paystack_refnumber,
-      });
+
+      // Push to Redis queue after payment insertion
+      redisClient
+        .rPush(PAYMENT_QUEUE, JSON.stringify(paymentDetails))
+        .then(() => {
+          console.log("Payment details sent to queue:", paymentDetails);
+          // Send response after Redis operation is successful
+          return res.status(201).json({
+            id: this.lastID,
+            order_id,
+            amount,
+            payment_date,
+            payment_method,
+            status,
+            paystack_refnumber,
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to add payment to queue:", err);
+          return res.status(500).json({ error: "Failed to process payment." });
+        });
     }
   );
 
-  db.close();
+  // Close the database after all operations are completed.
+  db.close((err) => {
+    if (err) {
+      console.error("Error closing database connection:", err.message);
+    }
+  });
 });
+
 
 /**
  * @swagger
