@@ -49,7 +49,6 @@ ADMIN_TEMPLATE_MAP = {
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 def load_template(template_name):
     template_path = os.path.join(TEMPLATE_DIR, template_name)
     try:
@@ -59,12 +58,10 @@ def load_template(template_name):
         logging.error(f"Template {template_name} not found in {TEMPLATE_DIR}")
         return None
 
-
 def render_template(template, context):
     for key, value in context.items():
         template = template.replace(f"{{{{{key}}}}}", str(value))
     return template
-
 
 def send_email(recipient_email, subject, body):
     try:
@@ -84,7 +81,6 @@ def send_email(recipient_email, subject, body):
     except Exception as e:
         logging.error(f"Failed to send email to {recipient_email}: {e}")
 
-
 def notify_admin(action_type, context, queue_name):
     admin_template = ADMIN_TEMPLATE_MAP.get(queue_name)
     if not admin_template:
@@ -94,7 +90,6 @@ def notify_admin(action_type, context, queue_name):
     subject = f"New {action_type.capitalize()} Notification"
     body = render_template(load_template(admin_template), context)
     send_email(ADMIN_EMAIL, subject, body)
-
 
 def format_datetime(datetime_str):
     """
@@ -107,7 +102,6 @@ def format_datetime(datetime_str):
     except (ValueError, TypeError):
         return 'N/A'
 
-
 def store_incomplete_data(reference, data, queue_type):
     """
     Store order or payment data in Redis using paystack_reference as the key.
@@ -115,7 +109,6 @@ def store_incomplete_data(reference, data, queue_type):
     """
     redis_client.hset(f"transaction:{reference}", queue_type, json.dumps(data))
     redis_client.expire(f"transaction:{reference}", 3600)  # Data expires in 1 hour
-
 
 def fetch_and_merge_data(reference):
     """
@@ -155,7 +148,6 @@ def fetch_and_merge_data(reference):
         return merged_data
     
     return None  # Data is incomplete, still waiting for the other part
-
 
 def email_worker(queue_name):
     """
@@ -204,7 +196,6 @@ def email_worker(queue_name):
                     'payment_status': merged_data['payment_status'],
                     'payment_date': merged_data['payment_date']
                 }
-                print(context)
 
                 # Determine the subject based on available data
                 if queue_name == ORDER_QUEUE and not merged_data.get('payment_date'):
@@ -223,7 +214,6 @@ def email_worker(queue_name):
                 # Notify admin after sending the email
                 notify_admin(queue_name.capitalize(), context, queue_name)
 
-
 def start_workers():
     """
     Start email workers for each queue in separate threads.
@@ -233,7 +223,6 @@ def start_workers():
         worker_thread = threading.Thread(target=email_worker, args=(queue_name,))
         worker_thread.daemon = True
         worker_thread.start()
-
 
 if __name__ == "__main__":
     start_workers()
