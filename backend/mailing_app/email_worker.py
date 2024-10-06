@@ -103,6 +103,7 @@ def email_worker(queue_name):
         if task:
             _, task_data = task
             task_data = json.loads(task_data)
+            print(task_data)
 
             # Handle context for different queues
             if queue_name == RESERVATION_QUEUE:
@@ -127,6 +128,7 @@ def email_worker(queue_name):
 
             elif queue_name == ORDER_QUEUE:
                 # New context for orders including user details and order details
+
                 context = {
                     'recipient_name': task_data['userDetails']["name"],
                     'recipient_address': task_data['userDetails']["address"],
