@@ -76,7 +76,7 @@ router.post("/", (req, res) => {
   let db = new sqlite3.Database(databasePath);
 
   // Query to get user details from the User table based on user_id
-  let userSql = `SELECT name, phone_number, address FROM User WHERE id = ?`;
+  let userSql = `SELECT name, phone_number,email, address FROM User WHERE id = ?`;
 
   db.get(userSql, [user_id], (err, userRow) => {
     if (err) {
@@ -111,6 +111,7 @@ router.post("/", (req, res) => {
             name: userRow.name,
             phone_number: userRow.phone_number,
             address: userRow.address,
+            email:userRow.email
           };
 
           let orderData = {
