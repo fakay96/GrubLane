@@ -60,38 +60,84 @@
 <body>
     <div class="container">
         <h1>Your Order Has Been Confirmed!</h1>
-        <p>Dear {{ recipient_name }},</p>
+        <p>Dear {{recipient_name}},</p>
         <p>Thank you for placing an order with Grublane Restaurant. We have successfully processed your order with the following details:</p>
         <ul>
-            <li><strong>Order Number:</strong> {{ order_number }}</li>
-            <li><strong>Amount Paid:</strong> N{{ amount_paid }}</li>
-            <li><strong>Date:</strong> {{ order_date }}</li>
-            <li><strong>Payment Method:</strong> {{ payment_method }}</li>
-        </ul>
+            <li><strong>Order Number:</strong> {{order_number}}</li>
+            <li><strong>Amount Paid:</strong> N{{amount_paid}}</li>
+            <li><strong>Date:</strong> {{order_date}}</li>
+            <li><strong>Payment Method:</strong> {{payment_method}}</li>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Detail</th>
+                        <th>Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>User Name:</strong></td>
+                        <td>{{recipient_name}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone Number:</strong></td>
+                        <td>{{recipient_phonenumber}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Address:</strong></td>
+                        <td>{{recipient_address}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{recipient_email}}</td>
+                    </tr>
+                </tbody>
+            </table>
     
-        <!-- Section for order details in table format -->
-        <h2>Order Details</h2>
-        <table border="1" cellspacing="0" cellpadding="5">
-            <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order_items %}
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>N{{ item.price }}</td>
-                    <td>N{{ item.price * item.quantity }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
+            <p>Order summary:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Amount Paid</th>
+                        <th>Order Date</th>
+                        <th>Payment Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{order_number}}</td>
+                        <td>N{{amount_paid}}</td>
+                        <td>{{order_date}}</td>
+                        <td>{{payment_method}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Section for order details in table format -->
+            <div class="order-details">
+                <h2>Order Details</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each order_items}}
+                        <tr>
+                            <td>{{item_name}}</td>
+                            <td>{{quantity}}</td>
+                            <td>N{{price}}</td>
+                            <td>N{{total}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+        </ul>
         <p>We look forward to serving you again soon. Have a wonderful day!</p>
         <p>Best regards,<br>The Grublane Restaurant Team</p>
     </div>
