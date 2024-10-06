@@ -155,15 +155,13 @@ def email_worker(queue_name):
     Combines order and payment information if necessary before sending an email.
     """
     logging.info(f"Listening for messages on {queue_name}...")
+    
+    # Get the correct template for the queue (Order, Payment, or Reservation)
     template_name = QUEUE_TEMPLATE_MAP.get(queue_name)
     if not template_name:
         logging.error(f"No template mapped for queue: {queue_name}")
         return
-
-    template = load_template(template_name)
-    if not template:
-        return
-
+    
     while True:
         task = redis_client.blpop(queue_name)
         if task:
@@ -197,6 +195,12 @@ def email_worker(queue_name):
                     'payment_date': merged_data['payment_date']
                 }
 
+                # Load the correct template for the queue type
+                template = load_template(template_name)
+                if not template:
+                    logging.error(f"Template {template_name} could not be loaded.")
+                    continue
+                
                 # Determine the subject based on available data
                 if queue_name == ORDER_QUEUE and not merged_data.get('payment_date'):
                     subject = "Order Confirmation"
