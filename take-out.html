@@ -770,39 +770,7 @@
       });
     });
 
-    // Function to handle Paystack payment
-    function payWithPaystack(amount, email, orderId, cartItems, customerDetails) {
-      let handler = PaystackPop.setup({
-        key: 'YOUR_PAYSTACK_PUBLIC_KEY', // Replace with your Paystack public key
-        email: email,
-        amount: amount * 100, // Paystack uses the lowest currency unit
-        ref: orderId,
-        metadata: {
-          custom_fields: [
-            {
-              display_name: "Cart Items",
-              variable_name: "cart_items",
-              value: JSON.stringify(cartItems),
-            },
-            {
-              display_name: "Customer Details",
-              variable_name: "customer_details",
-              value: JSON.stringify(customerDetails),
-            },
-          ],
-        },
-        callback: function (response) {
-          alert('Payment successful! Reference: ' + response.reference);
-          // You can redirect the user or perform other actions here
-          clearCart();
-          renderCart();
-        },
-        onClose: function () {
-          alert('Payment was not completed.');
-        },
-      });
-      handler.openIframe();
-    }
+   
 
     // Function to render the cart items
     function renderCart() {
