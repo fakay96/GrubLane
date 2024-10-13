@@ -315,6 +315,14 @@
         font-size: 25px;
       }
     }
+    #delivery-location {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    
   </style>
 </head>
 
@@ -331,24 +339,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarsExample05">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="about.html">About Us</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="dine-in.html">Dine-In Menu</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="take-out.html">Take-Out Menu</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="reservation.html">Table Reservations</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contact.html">Contact Us</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+            <li class="nav-item"><a class="nav-link" href="dine-in.html">Dine-In Menu</a></li>
+            <li class="nav-item"><a class="nav-link" href="take-out.html">Take-Out Menu</a></li>
+            <li class="nav-item"><a class="nav-link" href="reservation.html">Table Reservations</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
           </ul>
         </div>
         <a class="nav-link" href="#" id="cart-button">
@@ -401,6 +397,7 @@
   </div>
 
   <div id="overlay" class="overlay"></div>
+
   <footer class="site-footer" role="contentinfo">
     <div class="container">
       <div class="row mb-5">
@@ -481,36 +478,54 @@
   <script src="js/fetchdishes.js"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
+    let deliveryRates = [];
+    let selectedDeliveryRate = 0;
 
-    function gtag() {
-      dataLayer.push(arguments);
+    // Fetch delivery rates when the modal is opened
+    function fetchDeliveryRates() {
+      fetch('/api/deliveryRates')
+        .then(response => response.json())
+        .then(data => {
+          deliveryRates = data.deliveryRates;
+          populateDeliveryRatesSelect(deliveryRates);
+        })
+        .catch(error => console.error('Error fetching delivery rates:', error));
     }
-    gtag("js", new Date());
-    gtag("config", "UA-23581568-13");
-  </script>
 
-  <script>
-    window.onload = function () {
-      const pageType = document.body.dataset.pageType;
-      fetchMenuData(pageType);
-    };
+    // Populate the delivery rates in the select dropdown
+    function populateDeliveryRatesSelect(rates) {
+      const deliverySelect = document.getElementById('delivery-location');
+      deliverySelect.innerHTML = ''; // Clear previous options
 
-    // Close side cart
-    document.getElementById("side-cart-close").addEventListener("click", function () {
-      document.getElementById("side-cart").classList.remove("active");
-      document.getElementById("overlay").classList.remove("active");
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Select a delivery location';
+      deliverySelect.appendChild(defaultOption);
+
+      rates.forEach(rate => {
+        const option = document.createElement('option');
+        option.value = rate.rate;
+        option.textContent = `${rate.location} - ₦${rate.rate}`;
+        deliverySelect.appendChild(option);
+      });
+    }
+
+    // Update the total with the selected delivery rate
+    function updateTotalWithDeliveryRate() {
+      const totalAmountElement = document.getElementById('total-price');
+      let cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const finalTotal = cartTotal + selectedDeliveryRate;
+      totalAmountElement.textContent = `Total: ₦${finalTotal}`;
+    }
+
+    // Handle delivery location selection
+    document.getElementById('delivery-location').addEventListener('change', function() {
+      selectedDeliveryRate = parseInt(this.value) || 0;
+      updateTotalWithDeliveryRate();
     });
 
-    // Close side cart when clicking outside
-    document.getElementById("overlay").addEventListener("click", function () {
-      document.getElementById("side-cart").classList.remove("active");
-      document.getElementById("overlay").classList.remove("active");
-    });
-
-    // Checkout with Paystack
+    // Show the modal and fetch delivery rates
     document.getElementById("checkout-button").addEventListener("click", function () {
       cart = getCart(); // Retrieve the cart contents
 
@@ -519,37 +534,14 @@
         return;
       }
 
-      // Close the cart and overlay
-      document.getElementById("side-cart").classList.remove("active");
-      document.getElementById("overlay").classList.remove("active");
-
-      // Calculate total amount and other required data
-      let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      let userEmail = localStorage.getItem("userEmail") || "user@example.com";
-      let orderId = "ORDER_" + new Date().getTime();
-
-      // Show the modal to collect user details before proceeding to payment
       document.getElementById("checkout-modal").style.display = "block";
+      fetchDeliveryRates();
     });
-
-    // Close modal when clicking on the close button
-    document.querySelector(".close").addEventListener("click", function () {
-      document.getElementById("checkout-modal").style.display = "none";
-    });
-
-    // Close modal when clicking outside the modal content
-    window.onclick = function (event) {
-      const modal = document.getElementById("checkout-modal");
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    };
 
     // Handle form submission for user details and then trigger Paystack payment
     document.getElementById("checkout-form").addEventListener("submit", function (event) {
       event.preventDefault();
 
-      // Get user input values from the form
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
       const address = document.getElementById("address").value;
@@ -560,12 +552,11 @@
         return;
       }
 
-      const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + selectedDeliveryRate;
       const orderId = "ORDER_" + new Date().getTime();
       const cartItems = getCart();
 
       document.getElementById("checkout-modal").style.display = "none";
-      console.log(email);
 
       payWithPaystack(totalAmount, email, orderId, cartItems, {
         name: name,
@@ -574,19 +565,16 @@
       });
     });
 
-    // Animate on scroll library init
     AOS.init({
       duration: 800,
       easing: 'slide',
     });
 
-    // Initial setup
     function init() {
       renderCart();
       attachAddToCartListeners();
     }
 
-    // Initialize the cart and event listeners when the page loads
     document.addEventListener("DOMContentLoaded", init);
   </script>
 
@@ -611,6 +599,12 @@
         <div class="form-group">
           <label for="phoneNumber">Phone Number:</label>
           <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+          <label for="delivery-location">Delivery Location:</label>
+          <select id="delivery-location" name="delivery-location" required>
+            <option value="">Select a delivery location</option>
+          </select>
         </div>
         <button type="submit" id="submit-details" class="submit-btn">Proceed to Payment</button>
       </form>
