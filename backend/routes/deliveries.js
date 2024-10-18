@@ -47,13 +47,13 @@ const db = new sqlite3.Database(databasePath);
  */
 router.get("/deliveryRates", (req, res) => {
   const deliveryRates = [
-    { location: "Ikoyi", rate: 2000 },
-    { location: "VI", rate: 1000 },
-    { location: "Ikeja", rate: 6500 },
-    { location: "Lekki", rate: 2500 },
-    { location: "Ajah", rate: 4000 },
-    { location: "LBS", rate: 4800 },
-    { location: "Sangotedo", rate: 5000 },
+    { location: "Ikoyi", rate: 2500 },
+    { location: "VI", rate: 1500 },
+    { location: "Ikeja", rate: 7000 },
+    { location: "Lekki", rate: 3000 },
+    { location: "Ajah", rate: 4500 },
+    { location: "LBS", rate: 5200 },
+    { location: "Sangotedo", rate: 5500 },
   ];
 
   res.json({ deliveryRates });

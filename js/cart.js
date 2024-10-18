@@ -72,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // Paystack payment integration with cart data and user details
 function payWithPaystack(totalAmount, userEmail, cartItems, userDetails) {
   const handler = PaystackPop.setup({
-    key: "pk_test_8168df975740a7daac50c926c60f4a4694fc9d50", // Replace with your Paystack public key
+    key: "pk_live_27a1dbbb5102a0b8eddf56a6b11ff77365dbccec", 
+    
     email: userEmail,
     amount: totalAmount * 100, // Convert to kobo
     currency: "NGN",
