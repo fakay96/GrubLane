@@ -775,36 +775,7 @@ document.getElementById("checkout-form").addEventListener("submit", function (ev
   });
 });
 
-// Function to render the cart items
-function renderCart() {
-  const cartItemsContainer = document.getElementById('side-cart-items');
-  cartItemsContainer.innerHTML = '';
 
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
-    document.getElementById('total-price').textContent = 'Total: ₦0';
-    return;
-  }
-
-  cart.forEach(item => {
-    const itemDiv = document.createElement('div');
-    itemDiv.classList.add('cart-item');
-    itemDiv.innerHTML = `
-      <div style="flex: 1;">
-        <h4 style="margin: 0; font-size: 16px;">${item.name}</h4>
-        <p style="margin: 0; font-size: 14px;">₦${item.price} x ${item.quantity}</p>
-      </div>
-      <button class="remove-item-btn" data-id="${item.id}" style="background: none; border: none; color: red; font-size: 20px; cursor: pointer;">&times;</button>
-    `;
-    itemDiv.style.display = 'flex';
-    itemDiv.style.alignItems = 'center';
-    itemDiv.style.marginBottom = '10px';
-    cartItemsContainer.appendChild(itemDiv);
-  });
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  document.getElementById('total-price').textContent = `Total: ₦${cartTotal}`;
-}
 
 // Event delegation for removing items from cart
 document.getElementById('side-cart-items').addEventListener('click', function (e) {
