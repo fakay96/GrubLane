@@ -597,6 +597,12 @@
       </div>
     </div>
   </footer>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.waypoints.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/aos.js"></script>
+
 
   <!-- Scripts -->
   <script src="js/jquery.min.js"></script>
@@ -613,263 +619,280 @@
 
   <script>
     let deliveryRates = [];
-    let selectedDeliveryRate = 0;
-    let cart = [];
+let selectedDeliveryRate = 0;
+let cart = [];
 
-    // Function to toggle blur effect
-    function toggleBlur(apply) {
-      const mainContent = document.querySelector('header, .slider-wrap, .section, footer');
-      if (apply) {
-        mainContent.classList.add('blur');
-        toggleBodyScroll(true);
-      } else {
-        mainContent.classList.remove('blur');
-        toggleBodyScroll(false);
-      }
-    }
+// Function to toggle blur effect
+function toggleBlur(apply) {
+  const mainContent = document.querySelector('header, .slider-wrap, .section, footer');
+  if (apply) {
+    mainContent.classList.add('blur');
+    toggleBodyScroll(true);
+  } else {
+    mainContent.classList.remove('blur');
+    toggleBodyScroll(false);
+  }
+}
 
-    // Function to disable/enable body scroll
-    function toggleBodyScroll(disable) {
-      if (disable) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'auto';
-      }
-    }
+// Function to disable/enable body scroll
+function toggleBodyScroll(disable) {
+  if (disable) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+}
 
-    // Function to close the side cart
-    function closeCart() {
-      const sideCart = document.getElementById('side-cart');
-      sideCart.classList.remove('active');
-    }
+// Function to close the side cart
+function closeCart() {
+  const sideCart = document.getElementById('side-cart');
+  sideCart.classList.remove('active');
+}
 
-    // Function to open the side cart
-    function openCart() {
-      const sideCart = document.getElementById('side-cart');
-      sideCart.classList.add('active');
-    }
+// Function to open the side cart
+function openCart() {
+  const sideCart = document.getElementById('side-cart');
+  sideCart.classList.add('active');
+}
 
-    // Event listener to open the cart
-    document.getElementById('cart-button').addEventListener('click', function (e) {
-      e.preventDefault();
-      toggleBlur(false); // Ensure background is not blurred when opening cart
-      openCart();
-    });
+// Event listener to open the cart
+document.getElementById('cart-button').addEventListener('click', function (e) {
+  e.preventDefault();
+  toggleBlur(false); // Ensure background is not blurred when opening cart
+  openCart();
+});
 
-    // Event listener to close the cart
-    document.getElementById('side-cart-close').addEventListener('click', function () {
-      closeCart();
-    });
+// Event listener to close the cart
+document.getElementById('side-cart-close').addEventListener('click', function () {
+  closeCart();
+});
 
-    // Fetch delivery rates when the modal is opened
-    function fetchDeliveryRates() {
-      fetch('https://grublanerestaurant.com/api/deliveries/deliveryRates')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          deliveryRates = data.deliveryRates;
-          populateDeliveryRatesSelect(deliveryRates);
-        })
-        .catch(error => console.error('Error fetching delivery rates:', error));
-    }
+// Fetch delivery rates when the modal is opened
+function fetchDeliveryRates() {
+  fetch('https://grublanerestaurant.com/api/deliveries/deliveryRates')
+    .then(response => response.json())
+    .then(data => {
+      deliveryRates = data.deliveryRates;
+      populateDeliveryRatesSelect(deliveryRates);
+    })
+    .catch(error => console.error('Error fetching delivery rates:', error));
+}
 
-    // Populate the delivery rates in the select dropdown
-    function populateDeliveryRatesSelect(rates) {
-      const deliverySelect = document.getElementById('delivery-location');
-      deliverySelect.innerHTML = ''; // Clear previous options
+// Populate the delivery rates in the select dropdown
+function populateDeliveryRatesSelect(rates) {
+  const deliverySelect = document.getElementById('delivery-location');
+  deliverySelect.innerHTML = ''; // Clear previous options
 
-      const defaultOption = document.createElement('option');
-      defaultOption.value = '';
-      defaultOption.textContent = 'Select a delivery location';
-      deliverySelect.appendChild(defaultOption);
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = 'Select a delivery location';
+  deliverySelect.appendChild(defaultOption);
 
-      rates.forEach(rate => {
-        const option = document.createElement('option');
-        option.value = rate.rate;
-        option.textContent = `${rate.location} - ₦${rate.rate}`;
-        deliverySelect.appendChild(option);
-      });
-    }
+  rates.forEach(rate => {
+    const option = document.createElement('option');
+    option.value = rate.rate;
+    option.textContent = `${rate.location} - ₦${rate.rate}`;
+    deliverySelect.appendChild(option);
+  });
+}
 
-    // Update the total with the selected delivery rate
-    function updateTotalWithDeliveryRate() {
-      const totalAmountElement = document.getElementById('total-price');
-      let cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const finalTotal = cartTotal + selectedDeliveryRate;
-      totalAmountElement.textContent = `Total: ₦${finalTotal}`;
-    }
+// Update the total with the selected delivery rate
+function updateTotalWithDeliveryRate() {
+  const totalAmountElement = document.getElementById('total-price');
+  let cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const finalTotal = cartTotal + selectedDeliveryRate;
+  totalAmountElement.textContent = `Total: ₦${finalTotal}`;
+}
 
-    // Handle delivery location selection
-    document.getElementById('delivery-location').addEventListener('change', function () {
-      selectedDeliveryRate = parseInt(this.value) || 0;
-      updateTotalWithDeliveryRate();
-    });
+// Handle delivery location selection
+document.getElementById('delivery-location').addEventListener('change', function () {
+  selectedDeliveryRate = parseInt(this.value) || 0;
+  updateTotalWithDeliveryRate();
+});
 
-    // Show the modal, apply blur, and close the cart
-    document.getElementById("checkout-button").addEventListener("click", function () {
-      cart = getCart(); // Retrieve the cart contents
+// Show the modal, apply blur, and close the cart
+document.getElementById("checkout-button").addEventListener("click", function () {
+  cart = getCart(); // Retrieve the cart contents
 
-      if (cart.length === 0) {
-        alert("No items in cart. Please add items before checking out.");
-        return;
-      }
+  if (cart.length === 0) {
+    alert("No items in cart. Please add items before checking out.");
+    return;
+  }
 
-      // Close the cart if it's open
-      closeCart();
+  // Close the cart if it's open
+  closeCart();
 
-      // Apply blur to the background
-      toggleBlur(true);
+  // Apply blur to the background
+  toggleBlur(true);
 
-      // Show the modal
-      document.getElementById("checkout-modal").style.display = "block";
-      fetchDeliveryRates();
-    });
+  // Show the modal
+  document.getElementById("checkout-modal").style.display = "block";
+  fetchDeliveryRates();
+});
 
-    // Close the modal and remove blur when the close button is clicked
-    document.querySelector("#checkout-modal .close").addEventListener("click", function () {
-      document.getElementById("checkout-modal").style.display = "none";
-      toggleBlur(false);
-    });
+// Close the modal and remove blur when the close button is clicked
+document.querySelector("#checkout-modal .close").addEventListener("click", function () {
+  document.getElementById("checkout-modal").style.display = "none";
+  toggleBlur(false);
+});
 
-    // Also close the modal when clicking outside the modal content
-    window.addEventListener("click", function (event) {
-      const modal = document.getElementById("checkout-modal");
-      if (event.target == modal) {
-        modal.style.display = "none";
-        toggleBlur(false);
-      }
-    });
+// Also close the modal when clicking outside the modal content
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("checkout-modal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+    toggleBlur(false);
+  }
+});
 
-    // Handle form submission for user details and then trigger Paystack payment
-    document.getElementById("checkout-form").addEventListener("submit", function (event) {
-      event.preventDefault();
+// Handle form submission for user details and then trigger Paystack payment
+document.getElementById("checkout-form").addEventListener("submit", function (event) {
+  event.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const phoneNumber = document.getElementById("phoneNumber").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const phoneNumber = document.getElementById("phoneNumber").value.trim();
 
-      if (!name || !email || !address || !phoneNumber) {
-        alert("All fields are required!");
-        return;
-      }
+  if (!name || !email || !address || !phoneNumber) {
+    alert("All fields are required!");
+    return;
+  }
 
-      const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const totalAmount = cartTotal + selectedDeliveryRate;
-      const orderId = "ORDER_" + new Date().getTime();
-      const cartItems = getCart();
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = cartTotal + selectedDeliveryRate;
+  const orderId = "ORDER_" + new Date().getTime();
+  const cartItems = getCart();
 
-      // Close the modal and remove blur
-      document.getElementById("checkout-modal").style.display = "none";
-      toggleBlur(false);
+  // Close the modal and remove blur
+  document.getElementById("checkout-modal").style.display = "none";
+  toggleBlur(false);
 
-      payWithPaystack(totalAmount, email, orderId, cartItems, {
-        name: name,
-        address: address,
-        phoneNumber: phoneNumber,
-      });
-    });
+  payWithPaystack(totalAmount, email, orderId, cartItems, {
+    name: name,
+    address: address,
+    phoneNumber: phoneNumber,
+  });
+});
 
-   
+// Function to render the cart items
+function renderCart() {
+  const cartItemsContainer = document.getElementById('side-cart-items');
+  cartItemsContainer.innerHTML = '';
 
-    // Function to render the cart items
-    function renderCart() {
-      const cartItemsContainer = document.getElementById('side-cart-items');
-      cartItemsContainer.innerHTML = '';
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+    document.getElementById('total-price').textContent = 'Total: ₦0';
+    return;
+  }
 
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
-        document.getElementById('total-price').textContent = 'Total: ₦0';
-        return;
-      }
+  cart.forEach(item => {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('cart-item');
+    itemDiv.innerHTML = `
+      <div style="flex: 1;">
+        <h4 style="margin: 0; font-size: 16px;">${item.name}</h4>
+        <p style="margin: 0; font-size: 14px;">₦${item.price} x ${item.quantity}</p>
+      </div>
+      <button class="remove-item-btn" data-id="${item.id}" style="background: none; border: none; color: red; font-size: 20px; cursor: pointer;">&times;</button>
+    `;
+    itemDiv.style.display = 'flex';
+    itemDiv.style.alignItems = 'center';
+    itemDiv.style.marginBottom = '10px';
+    cartItemsContainer.appendChild(itemDiv);
+  });
 
-      cart.forEach(item => {
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('cart-item');
-        itemDiv.innerHTML = `
-          
-          <div style="flex: 1;">
-            <h4 style="margin: 0; font-size: 16px;">${item.name}</h4>
-            <p style="margin: 0; font-size: 14px;">₦${item.price} x ${item.quantity}</p>
-          </div>
-          <button onclick="removeFromCart('${item.id}')" style="background: none; border: none; color: red; font-size: 20px; cursor: pointer;">&times;</button>
-        `;
-        itemDiv.style.display = 'flex';
-        itemDiv.style.alignItems = 'center';
-        itemDiv.style.marginBottom = '10px';
-        cartItemsContainer.appendChild(itemDiv);
-      });
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  document.getElementById('total-price').textContent = `Total: ₦${cartTotal}`;
+}
 
-      const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      document.getElementById('total-price').textContent = `Total: ₦${cartTotal}`;
-    }
+// Event delegation for removing items from cart
+document.getElementById('side-cart-items').addEventListener('click', function (e) {
+  if (e.target.classList.contains('remove-item-btn')) {
+    const itemId = e.target.getAttribute('data-id');
+    removeFromCart(itemId);
+  }
+});
 
-    // Function to attach event listeners to "Add to Cart" buttons
-    function attachAddToCartListeners() {
-      const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-      addToCartButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          const itemId = this.getAttribute('data-id');
-          const itemName = this.getAttribute('data-name');
-          const itemPrice = parseInt(this.getAttribute('data-price'));
-          const itemImage = this.getAttribute('data-image');
+// Function to remove item from cart
+function removeFromCart(itemId) {
+  cart = cart.filter(item => item.id !== itemId);
+  saveCart();
+  renderCart();
+}
 
-          addToCart({ id: itemId, name: itemName, price: itemPrice, image: itemImage });
-          renderCart();
-        });
-      });
-    }
+// Function to add item to cart
+function addToCart(item) {
+  const existingItem = cart.find(cartItem => cartItem.id === item.id);
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({ ...item, quantity: 1 });
+  }
+  saveCart();
+  renderCart();
+}
 
-    // Function to add item to cart
-    function addToCart(item) {
-      const existingItem = cart.find(cartItem => cartItem.id === item.id);
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({ ...item, quantity: 1 });
-      }
-      saveCart();
-    }
+// Function to save cart to localStorage
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
 
-    // Function to remove item from cart
-    function removeFromCart(itemId) {
-      cart = cart.filter(item => item.id !== itemId);
-      saveCart();
+// Function to get cart from localStorage
+function getCart() {
+  const storedCart = localStorage.getItem('cart');
+  return storedCart ? JSON.parse(storedCart) : [];
+}
+
+// Function to clear the cart after successful payment
+function clearCart() {
+  cart = [];
+  saveCart();
+  renderCart();
+}
+
+// Attach event listeners to "Add to Cart" buttons
+function attachAddToCartListeners() {
+  const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const itemId = this.getAttribute('data-id');
+      const itemName = this.getAttribute('data-name');
+      const itemPrice = parseInt(this.getAttribute('data-price'));
+      const itemImage = this.getAttribute('data-image');
+
+      addToCart({ id: itemId, name: itemName, price: itemPrice, image: itemImage });
       renderCart();
-    }
+    });
+  });
+}
 
-    // Function to save cart to localStorage
-    function saveCart() {
-      localStorage.setItem('cart', JSON.stringify(cart));
-    }
+// Poll the cart for updates every second
+function pollCartUpdates() {
+  setInterval(function () {
+    cart = getCart();
+    renderCart();
+  }, 1000); // Refresh cart every second
+}
 
-    // Function to get cart from localStorage
-    function getCart() {
-      const storedCart = localStorage.getItem('cart');
-      return storedCart ? JSON.parse(storedCart) : [];
-    }
+// Initialize cart on page load
+function init() {
+  cart = getCart();
+  renderCart();
+  attachAddToCartListeners();
+  pollCartUpdates(); // Start polling the cart for real-time updates
+  AOS.init({
+    duration: 800,
+    easing: 'slide',
+  });
+}
 
-    // Function to clear the cart after successful payment
-    function clearCart() {
-      cart = [];
-      saveCart();
-      renderCart();
-    }
+document.addEventListener("DOMContentLoaded", init);
 
-    // Initialize cart on page load
-    function init() {
-      cart = getCart();
-      renderCart();
-      attachAddToCartListeners();
-      AOS.init({
-        duration: 800,
-        easing: 'slide',
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", init);
+    
   </script>
-
+  
+  
 </body>
 
 </html>

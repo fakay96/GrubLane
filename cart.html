@@ -5,9 +5,7 @@
   <title>Cart - Grub Lane</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800|DM+Serif+Display:400,400i&amp;display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800|DM+Serif+Display:400,400i&amp;display=swap" rel="stylesheet" />
   <link rel="shortcut icon" href="ftco-32x32.html" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet" />
   <link rel="stylesheet" href="css/bootstrap.css" />
@@ -30,11 +28,9 @@
   <header role="banner" style="background-color: #FF7404;">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="index.html"><img src="img/GrublaneBC-03.png" alt="grublane logo"
-            style="width: 200px" /></a>
+        <a class="navbar-brand" href="index.html"><img src="img/GrublaneBC-03.png" alt="grublane logo" style="width: 200px" /></a>
         <div class="d-flex">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05"
-            aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <a class="nav-link" href="#" id="cart-button"><i class="fa fa-shopping-cart"></i></a>
@@ -86,25 +82,9 @@
     <div class="container">
       <div class="row mb-5">
         <div class="col-md-4 mb-5">
-          <!-- <h3>About Us</h3>
-              <p class="mb-5">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptatibus et dolor blanditiis consequuntur ex voluptates
-                perspiciatis omnis unde minima expedita.
-              </p> -->
           <ul class="list-unstyled footer-link d-flex footer-social">
-            <!-- <li>
-              <a href="#" class="p-2"><span class="fa fa-twitter"></span></a>
-            </li>
             <li>
-              <a href="#" class="p-2"><span class="fa fa-facebook"></span></a>
-            </li>
-            <li>
-              <a href="#" class="p-2"><span class="fa fa-linkedin"></span></a>
-            </li> -->
-            <li>
-              <a href="https://www.instagram.com/grub_lane_lagos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                class="p-2"><span class="fa fa-instagram"></span></a>
+              <a href="https://www.instagram.com/grub_lane_lagos?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="p-2"><span class="fa fa-instagram"></span></a>
               <br />
               <p>Instagram</p>
             </li>
@@ -129,9 +109,7 @@
                 <span class="d-block text-black">Phone:</span><span> +234 808 912 8657</span>
               </li>
               <li class="d-block">
-                <span class="d-block text-black">Email:</span><span><a href="mailto:grublane@yahoo.com"
-                    class="__cf_email__"
-                    data-cfemail="7910171f163900160c0b1d1614181017571a1614">grublane@yahoo.com</a></span>
+                <span class="d-block text-black">Email:</span><span><a href="mailto:grublane@yahoo.com" class="__cf_email__" data-cfemail="7910171f163900160c0b1d1614181017571a1614">grublane@yahoo.com</a></span>
               </li>
             </ul>
           </div>
@@ -145,14 +123,12 @@
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
-        <div class="col-md-3"></div>
       </div>
       <div class="row">
         <div class="col-12 text-md-center text-left">
           <p>
             Copyright &copy;
-            <script data-cfasync="false"
-              src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+            <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
             <script>
               document.write(new Date().getFullYear());
             </script>
@@ -178,11 +154,8 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+    function gtag() { dataLayer.push(arguments); }
     gtag("js", new Date());
-
     gtag("config", "UA-23581568-13");
   </script>
 
@@ -197,27 +170,32 @@
 
       let totalPrice = 0;
 
-      cart.forEach((item) => {
-        const cartItemDiv = document.createElement("div");
-        cartItemDiv.classList.add("col-md-4", "mb-4");
-        cartItemDiv.innerHTML = `
-          <div class="menu-item">
-            <h4>${item.name}</h4>
-            <p>N${item.price}</p>
-          </div>
-        `;
-        cartItemsContainer.appendChild(cartItemDiv);
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty</p>";
+      } else {
+        cart.forEach((item) => {
+          const cartItemDiv = document.createElement("div");
+          cartItemDiv.classList.add("col-md-4", "mb-4");
+          cartItemDiv.innerHTML = `
+            <div class="menu-item">
+              <h4>${item.name}</h4>
+              <p>N${item.price}</p>
+            </div>
+          `;
+          cartItemsContainer.appendChild(cartItemDiv);
+          totalPrice += parseInt(item.price);
+        });
+      }
 
-        totalPrice += parseInt(item.price);
-      });
-
-      document.getElementById(
-        "total-price"
-      ).textContent = `Total: N${totalPrice}`;
+      document.getElementById("total-price").textContent = `Total: N${totalPrice}`;
     }
 
-    // Initial render
-    renderCart();
+    // Update localStorage and re-render after cart modification
+    function updateCart(newCart) {
+      cart = newCart;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
 
     // Paystack integration
     const checkoutButton = document.getElementById("checkout-button");
@@ -225,14 +203,11 @@
       const handler = PaystackPop.setup({
         key: "your-public-key", // Replace with your Paystack public key
         email: "customer@example.com",
-        amount:
-          cart.reduce((total, item) => total + parseInt(item.price), 0) * 100,
+        amount: cart.reduce((total, item) => total + parseInt(item.price), 0) * 100,
         currency: "NGN",
         ref: "" + Math.floor(Math.random() * 1000000000 + 1), // Generate a random reference number
         callback: function (response) {
-          alert(
-            "Payment successful. Transaction ref is " + response.reference
-          );
+          alert("Payment successful. Transaction ref is " + response.reference);
           // Clear cart
           localStorage.removeItem("cart");
           renderCart();
@@ -243,12 +218,11 @@
       });
       handler.openIframe();
     });
+
+    // Initial render
+    renderCart();
   </script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
-    integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
-    data-cf-beacon='{"rayId":"8a3c1b55ef2e8926","version":"2024.6.1","serverTiming":{"name":{"cfL4":true}},"token":"cd0b4b3a733644fc843ef0b185f98241","b":1}'
-    crossorigin="anonymous"></script>
 </body>
 
 </html>

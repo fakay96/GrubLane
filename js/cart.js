@@ -1,6 +1,7 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize cart
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = getCart();
 
   // Get modal elements
   const modal = document.getElementById("checkout-modal");
@@ -67,13 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.error("Modal or buttons not found in DOM");
   }
+
+  // Initial render of the cart
+  renderCart();
 });
 
 // Paystack payment integration with cart data and user details
 function payWithPaystack(totalAmount, userEmail, cartItems, userDetails) {
   const handler = PaystackPop.setup({
-    key: "pk_live_27a1dbbb5102a0b8eddf56a6b11ff77365dbccec", 
-    
+    key: "pk_live_27a1dbbb5102a0b8eddf56a6b11ff77365dbccec",
+
     email: userEmail,
     amount: totalAmount * 100, // Convert to kobo
     currency: "NGN",
@@ -87,7 +91,6 @@ function payWithPaystack(totalAmount, userEmail, cartItems, userDetails) {
           // 2. Then create the order with the user's ID and the Paystack reference
           createOrder(userId, totalAmount, new Date().toISOString(), cartItems, response.reference)
             .then((orderData) => {
-
               // 3. Finally, record the payment
               recordPayment(response.reference, userEmail, totalAmount, orderData.id);
             })
@@ -126,7 +129,6 @@ function createUser(email, name, address, phoneNumber) {
     body: JSON.stringify(userData),
   })
     .then((response) => {
-
       if (response.status === 200 || response.status === 201) {
         return response.json(); // Successful creation
       }
@@ -134,7 +136,7 @@ function createUser(email, name, address, phoneNumber) {
       if (response.status === 409) {
         return response.json().then((data) => {
           console.warn("Conflict: User already exists");
-          return { userId: data.id }; // Return existing user's ID
+          return { id: data.id }; // Return existing user's ID
         });
       }
 
@@ -211,7 +213,7 @@ function recordPayment(reference, email, amount, orderId) {
     .then(() => {
       alert("Payment successful and recorded!");
       localStorage.removeItem("cart");
-      
+
       window.location.href = `order-confirmation.html?orderId=${orderId}`;
     })
     .catch((error) => {
@@ -219,7 +221,6 @@ function recordPayment(reference, email, amount, orderId) {
       alert("Failed to record payment. Please contact support.");
     });
 }
-
 
 // Get cart items from localStorage
 function getCart() {
@@ -231,6 +232,8 @@ function renderCart() {
   const cartItemsContainer = document.getElementById("side-cart-items");
   cartItemsContainer.innerHTML = "";
 
+  // Fetch the latest cart data from localStorage
+  let cart = getCart();
   let totalPrice = 0;
 
   cart.forEach((item, index) => {
@@ -253,18 +256,24 @@ function renderCart() {
   const checkoutButton = document.getElementById("checkout-button");
   checkoutButton.disabled = cart.length === 0;
 
+  // Update event listeners for remove buttons
   document.querySelectorAll(".remove-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const itemIndex = this.getAttribute("data-index");
+      // Fetch the latest cart data
+      let cart = getCart();
       cart.splice(itemIndex, 1);
       localStorage.setItem("cart", JSON.stringify(cart));
       renderCart();
     });
   });
 
+  // Update event listeners for decrease quantity buttons
   document.querySelectorAll(".decrease-quantity").forEach((button) => {
     button.addEventListener("click", function () {
       const itemIndex = this.getAttribute("data-index");
+      // Fetch the latest cart data
+      let cart = getCart();
       if (cart[itemIndex].quantity > 1) {
         cart[itemIndex].quantity -= 1;
         localStorage.setItem("cart", JSON.stringify(cart));
@@ -273,9 +282,12 @@ function renderCart() {
     });
   });
 
+  // Update event listeners for increase quantity buttons
   document.querySelectorAll(".increase-quantity").forEach((button) => {
     button.addEventListener("click", function () {
       const itemIndex = this.getAttribute("data-index");
+      // Fetch the latest cart data
+      let cart = getCart();
       cart[itemIndex].quantity += 1;
       localStorage.setItem("cart", JSON.stringify(cart));
       renderCart();
@@ -283,5 +295,3 @@ function renderCart() {
   });
 }
 
-// Initial render of the cart
-renderCart();
