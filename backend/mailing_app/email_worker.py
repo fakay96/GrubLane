@@ -175,13 +175,17 @@ def email_worker(queue_name):
             elif queue_name == PAYMENT_QUEUE:
                 store_incomplete_data(paystack_reference, task_data, 'payment')
             elif queue_name == RESERVATION_QUEUE:
-                # Send the reservation confirmation directly since reservation is independent
+                date_time_str = task_data.get("date_time")
+                parsed_datetime = datetime.fromisoformat(date_time_str)  # Parse the ISO string into a datetime object
+
+                reservation_date = parsed_datetime.strftime('%Y-%m-%d')  # Extract the date
+                reservation_time = parsed_datetime.strftime('%H:%M') 
                 context = {
                     'recipient_name': task_data.get('name'),
                     'email': task_data.get('email'),
-                    'reservation_date': task_data.get('reservation_date'),
-                    'reservation_time': task_data.get('reservation_time'),
-                    'guest_count': task_data.get('guest_count')
+                    'reservation_date': reservation_date,
+                    'reservation_time': reservation_time,
+                    'guest_count': task_data.get('number_of_guests'),
                 }
 
                 # Load and render the reservation template
