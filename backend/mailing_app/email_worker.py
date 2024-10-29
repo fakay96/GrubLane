@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 from datetime import datetime
+import email.utils
 
 # Load environment variables from .env file
 load_dotenv()
@@ -69,6 +70,11 @@ def send_email(recipient_email, subject, body):
         msg['From'] = SMTP_USER
         msg['To'] = recipient_email
         msg['Subject'] = subject
+        
+        # Generate a unique Message-ID
+        msg['Message-ID'] = email.utils.make_msgid(domain="grublanerestaurant.com")
+        msg['Date'] = email.utils.formatdate(localtime=True)
+        
         msg.attach(MIMEText(body, 'html'))
 
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
