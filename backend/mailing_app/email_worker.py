@@ -92,42 +92,27 @@ def notify_admin(action_type, context, queue_name):
     send_email(ADMIN_EMAIL, subject, body)
 
 def format_datetime(datetime_str):
-    """
-    Converts ISO 8601 datetime string to a human-readable format: YYYY-MM-DD HH:MM.
-    If the string is empty or invalid, return 'N/A'.
-    """
     try:
-        parsed_date = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))  # Handle Zulu time if present
-        return parsed_date.strftime('%Y-%m-%d %H:%M')  # Format it as 'YYYY-MM-DD HH:MM'
+        parsed_date = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
+        return parsed_date.strftime('%Y-%m-%d %H:%M')
     except (ValueError, TypeError):
         return 'N/A'
 
 def store_incomplete_data(reference, data, queue_type):
-    """
-    Store order or payment data in Redis using paystack_reference as the key.
-    Set an expiration time to avoid stale data.
-    """
     redis_client.hset(f"transaction:{reference}", queue_type, json.dumps(data))
-    redis_client.expire(f"transaction:{reference}", 3600)  # Data expires in 1 hour
+    redis_client.expire(f"transaction:{reference}", 3600)
 
 def fetch_and_merge_data(reference):
-    """
-    Fetch order and payment data from Redis using the paystack_reference key.
-    If both are available, merge them into a unified context.
-    """
     order_data = redis_client.hget(f"transaction:{reference}", "order")
     payment_data = redis_client.hget(f"transaction:{reference}", "payment")
     
     if order_data and payment_data:
-        # Both pieces of data are available, merge them
         order_data = json.loads(order_data)
         payment_data = json.loads(payment_data)
 
-        # Convert the date fields to human-readable format
         order_date = format_datetime(order_data.get('date', 'N/A'))
         payment_date = format_datetime(payment_data.get('payment_date', 'N/A'))
 
-        # Merge relevant fields from both order and payment
         merged_data = {
             'recipient_name': order_data.get('name', payment_data.get('name')),
             'recipient_address': order_data.get('address', payment_data.get('address')),
@@ -143,20 +128,14 @@ def fetch_and_merge_data(reference):
             'order_date': order_date
         }
 
-        # Delete merged data from Redis after processing
         redis_client.delete(f"transaction:{reference}")
         return merged_data
     
-    return None  # Data is incomplete, still waiting for the other part
+    return None
 
 def email_worker(queue_name):
-    """
-    Worker function to process emails from Redis queues.
-    Combines order, payment, and reservation information if necessary before sending an email.
-    """
     logging.info(f"Listening for messages on {queue_name}...")
 
-    # Get the correct template for the queue (Order, Payment, or Reservation)
     template_name = QUEUE_TEMPLATE_MAP.get(queue_name)
     if not template_name:
         logging.error(f"No template mapped for queue: {queue_name}")
@@ -169,16 +148,15 @@ def email_worker(queue_name):
             task_data = json.loads(task_data)
             paystack_reference = task_data.get('paystack_reference') or task_data.get('paystack_refnumber')
 
-            # Store the incoming data in Redis based on the queue
             if queue_name == ORDER_QUEUE:
                 store_incomplete_data(paystack_reference, task_data, 'order')
             elif queue_name == PAYMENT_QUEUE:
                 store_incomplete_data(paystack_reference, task_data, 'payment')
             elif queue_name == RESERVATION_QUEUE:
                 date_time_str = task_data.get("date_time")
-                parsed_datetime = datetime.fromisoformat(date_time_str)  # Parse the ISO string into a datetime object
+                parsed_datetime = datetime.fromisoformat(date_time_str)
 
-                reservation_date = parsed_datetime.strftime('%Y-%m-%d')  # Extract the date
+                reservation_date = parsed_datetime.strftime('%Y-%m-%d')
                 reservation_time = parsed_datetime.strftime('%H:%M') 
                 context = {
                     'recipient_name': task_data.get('name'),
@@ -188,19 +166,19 @@ def email_worker(queue_name):
                     'guest_count': task_data.get('number_of_guests'),
                 }
 
-                # Load and render the reservation template
                 reservation_template = load_template(QUEUE_TEMPLATE_MAP[RESERVATION_QUEUE])
                 if reservation_template:
                     reservation_content = render_template(reservation_template, context)
                     send_email(context['email'], "Reservation Confirmation", reservation_content)
                     logging.info(f"Reservation confirmation email sent to {context['email']}")
+
+                notify_admin("reservation", context, RESERVATION_QUEUE)
+                logging.info("Admin notified of new reservation")
                 continue
 
-            # Check if both order and payment data are available
             merged_data = fetch_and_merge_data(paystack_reference)
 
             if merged_data:
-                # Unified context for sending order and payment emails
                 context = {
                     'recipient_name': merged_data['recipient_name'],
                     'recipient_address': merged_data['recipient_address'],
@@ -215,33 +193,25 @@ def email_worker(queue_name):
                     'payment_status': merged_data['payment_status'],
                     'payment_date': merged_data['payment_date'],
                     'recipient_email':merged_data['email']
-
-
                 }
 
                 recipient_email = merged_data['email']
 
-                # Send the order confirmation email first
                 order_template = load_template(QUEUE_TEMPLATE_MAP[ORDER_QUEUE])
                 if order_template:
                     order_content = render_template(order_template, context)
                     send_email(recipient_email, "Order Confirmation", order_content)
                     logging.info(f"Order confirmation email sent to {recipient_email}")
                 
-                # Send the payment confirmation email
                 payment_template = load_template(QUEUE_TEMPLATE_MAP[PAYMENT_QUEUE])
                 if payment_template:
                     payment_content = render_template(payment_template, context)
                     send_email(recipient_email, "Payment Confirmation", payment_content)
                     logging.info(f"Payment confirmation email sent to {recipient_email}")
 
-                # Notify admin after sending the emails
                 notify_admin(queue_name.capitalize(), context, queue_name)
 
 def start_workers():
-    """
-    Start email workers for each queue in separate threads.
-    """
     queues = [RESERVATION_QUEUE, PAYMENT_QUEUE, ORDER_QUEUE]  
     for queue_name in queues:
         worker_thread = threading.Thread(target=email_worker, args=(queue_name,))
