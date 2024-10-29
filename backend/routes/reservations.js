@@ -122,11 +122,10 @@ router.post("/", (req, res) => {
             date_time,
             email,
             name,
-            phone_number
+            phone_number,
             
           };
 
-          // Using Promises with Redis client
           
           redisClient.rPush(RESERVATION_QUEUE, JSON.stringify(reservationDetails))
             .then(() => {
