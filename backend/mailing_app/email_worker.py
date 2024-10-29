@@ -198,6 +198,7 @@ def email_worker(queue_name):
                         'reservation_time': reservation_time,
                         'guest_count': task_data.get('number_of_guests'),
                         'action_type': 'reservation',
+                        'phone_number': task_data.get('phone_number'),
                     }
 
                     reservation_template = load_template(QUEUE_TEMPLATE_MAP[RESERVATION_QUEUE])
