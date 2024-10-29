@@ -109,8 +109,7 @@ def format_datetime(datetime_str):
     If the string is empty or invalid, return 'N/A'.
     """
     try:
-        # Use strptime instead of fromisoformat
-        parsed_date = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M')
+        parsed_date = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
         return parsed_date.strftime('%Y-%m-%d %H:%M')
     except (ValueError, TypeError):
         return 'N/A'
@@ -180,35 +179,27 @@ def email_worker(queue_name):
                 store_incomplete_data(paystack_reference, task_data, 'payment')
             elif queue_name == RESERVATION_QUEUE:
                 date_time_str = task_data.get("date_time")
-                try:
-                    # Use strptime to parse the datetime string
-                    parsed_datetime = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
-                except ValueError:
-                    logging.error(f"Invalid date_time format: {date_time_str}")
-                    parsed_datetime = None
+                parsed_datetime = datetime.fromisoformat(date_time_str)
 
-                if parsed_datetime:
-                    reservation_date = parsed_datetime.strftime('%Y-%m-%d')
-                    reservation_time = parsed_datetime.strftime('%H:%M') 
-                    context = {
-                        'recipient_name': task_data.get('name'),
-                        'email': task_data.get('email'),
-                        'reservation_date': reservation_date,
-                        'reservation_time': reservation_time,
-                        'guest_count': task_data.get('number_of_guests'),
-                    }
+                reservation_date = parsed_datetime.strftime('%Y-%m-%d')
+                reservation_time = parsed_datetime.strftime('%H:%M') 
+                context = {
+                    'recipient_name': task_data.get('name'),
+                    'email': task_data.get('email'),
+                    'reservation_date': reservation_date,
+                    'reservation_time': reservation_time,
+                    'guest_count': task_data.get('number_of_guests'),
+                }
 
-                    reservation_template = load_template(QUEUE_TEMPLATE_MAP[RESERVATION_QUEUE])
-                    if reservation_template:
-                        reservation_content = render_template(reservation_template, context)
-                        send_email(context['email'], "Reservation Confirmation", reservation_content)
-                        logging.info(f"Reservation confirmation email sent to {context['email']}")
+                reservation_template = load_template(QUEUE_TEMPLATE_MAP[RESERVATION_QUEUE])
+                if reservation_template:
+                    reservation_content = render_template(reservation_template, context)
+                    send_email(context['email'], "Reservation Confirmation", reservation_content)
+                    logging.info(f"Reservation confirmation email sent to {context['email']}")
 
-                    # Notify admin about the reservation
-                    notify_admin("reservation", context, RESERVATION_QUEUE)
-                    logging.info("Admin notified of new reservation")
-                else:
-                    logging.error(f"Failed to parse date_time_str: {date_time_str}")
+                # Notify admin about the reservation
+                notify_admin("reservation", context, RESERVATION_QUEUE)
+                logging.info("Admin notified of new reservation")
                 continue
 
             merged_data = fetch_and_merge_data(paystack_reference)
