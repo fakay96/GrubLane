@@ -13,19 +13,19 @@ import email.utils
 # Load environment variables from .env file
 load_dotenv()
 
-# Set up Redis client
-redis_client = redis.StrictRedis(host='localhost', port=6379)
+# Set up Redis client with decoding to handle strings
+redis_client = redis.StrictRedis(host='localhost', port=6379, decode_responses=True)
 
 # SMTP email server configuration
-SMTP_SERVER = os.getenv('SMTP_SERVER')
-SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
-SMTP_USER = os.getenv('SMTP_USER')
-SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
+SMTP_SERVER = os.getenv('SMTP_SERVER')          # e.g., 'us2.outbound.mailhostbox.com'
+SMTP_PORT = int(os.getenv('SMTP_PORT', 587))    # Typically 587 for TLS
+SMTP_USER = os.getenv('SMTP_USER')              # e.g., 'noreply@grublanerestaurant.com'
+SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')      # Ensure this is secure
 
 # Redis queue names for reservations, payments, and orders
-RESERVATION_QUEUE = os.getenv('RESERVATION_QUEUE')
-PAYMENT_QUEUE = os.getenv('PAYMENT_QUEUE')
-ORDER_QUEUE = os.getenv('ORDER_QUEUE')
+RESERVATION_QUEUE = os.getenv('RESERVATION_QUEUE')  # e.g., 'reservation_queue'
+PAYMENT_QUEUE = os.getenv('PAYMENT_QUEUE')          # e.g., 'payment_queue'
+ORDER_QUEUE = os.getenv('ORDER_QUEUE')              # e.g., 'order_queue'
 
 # Admin email for notifications
 ADMIN_EMAIL = "grublane@yahoo.com"
@@ -51,6 +51,7 @@ ADMIN_TEMPLATE_MAP = {
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def load_template(template_name):
+    """Load an email template from the TEMPLATE_DIR."""
     template_path = os.path.join(TEMPLATE_DIR, template_name)
     try:
         with open(template_path, 'r', encoding='utf-8') as template_file:
@@ -60,25 +61,29 @@ def load_template(template_name):
         return None
 
 def render_template(template, context):
+    """Replace placeholders in the template with context data."""
     for key, value in context.items():
         template = template.replace(f"{{{{{key}}}}}", str(value))
     return template
 
 def send_email(recipient_email, subject, body):
+    """Send an email with the specified subject and body to the recipient."""
     try:
         msg = MIMEMultipart()
         msg['From'] = SMTP_USER
         msg['To'] = recipient_email
         msg['Subject'] = subject
-        
+
         # Generate a unique Message-ID
         msg['Message-ID'] = email.utils.make_msgid(domain="grublanerestaurant.com")
         msg['Date'] = email.utils.formatdate(localtime=True)
-        
+
+        # Attach the email body
         msg.attach(MIMEText(body, 'html'))
 
+        # Connect to the SMTP server and send the email
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
+            server.starttls()  # Secure the connection
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.send_message(msg)
 
@@ -88,6 +93,7 @@ def send_email(recipient_email, subject, body):
         logging.error(f"Failed to send email to {recipient_email}: {e}")
 
 def notify_admin(action_type, context, queue_name):
+    """Send a notification email to the admin based on the action type."""
     admin_template = ADMIN_TEMPLATE_MAP.get(queue_name)
     if not admin_template:
         logging.error(f"No admin template mapped for queue: {queue_name}")
@@ -98,6 +104,10 @@ def notify_admin(action_type, context, queue_name):
     send_email(ADMIN_EMAIL, subject, body)
 
 def format_datetime(datetime_str):
+    """
+    Converts ISO 8601 datetime string to a human-readable format: YYYY-MM-DD HH:MM.
+    If the string is empty or invalid, return 'N/A'.
+    """
     try:
         parsed_date = datetime.fromisoformat(datetime_str.replace('Z', '+00:00'))
         return parsed_date.strftime('%Y-%m-%d %H:%M')
@@ -105,10 +115,18 @@ def format_datetime(datetime_str):
         return 'N/A'
 
 def store_incomplete_data(reference, data, queue_type):
+    """
+    Store order or payment data in Redis using paystack_reference as the key.
+    Set an expiration time to avoid stale data.
+    """
     redis_client.hset(f"transaction:{reference}", queue_type, json.dumps(data))
-    redis_client.expire(f"transaction:{reference}", 3600)
+    redis_client.expire(f"transaction:{reference}", 3600)  # Data expires in 1 hour
 
 def fetch_and_merge_data(reference):
+    """
+    Fetch order and payment data from Redis using the paystack_reference key.
+    If both are available, merge them into a unified context.
+    """
     order_data = redis_client.hget(f"transaction:{reference}", "order")
     payment_data = redis_client.hget(f"transaction:{reference}", "payment")
     
@@ -137,16 +155,17 @@ def fetch_and_merge_data(reference):
         redis_client.delete(f"transaction:{reference}")
         return merged_data
     
-    return None
+    return None  # Data is incomplete, still waiting for the other part
 
 def email_worker(queue_name):
+    """Worker function to process emails from Redis queues."""
     logging.info(f"Listening for messages on {queue_name}...")
 
     template_name = QUEUE_TEMPLATE_MAP.get(queue_name)
     if not template_name:
         logging.error(f"No template mapped for queue: {queue_name}")
         return
-    
+
     while True:
         task = redis_client.blpop(queue_name)
         if task:
@@ -178,6 +197,7 @@ def email_worker(queue_name):
                     send_email(context['email'], "Reservation Confirmation", reservation_content)
                     logging.info(f"Reservation confirmation email sent to {context['email']}")
 
+                # Notify admin about the reservation
                 notify_admin("reservation", context, RESERVATION_QUEUE)
                 logging.info("Admin notified of new reservation")
                 continue
@@ -198,26 +218,30 @@ def email_worker(queue_name):
                     'payment_method': merged_data['payment_method'],
                     'payment_status': merged_data['payment_status'],
                     'payment_date': merged_data['payment_date'],
-                    'recipient_email':merged_data['email']
+                    'recipient_email': merged_data['email']
                 }
 
                 recipient_email = merged_data['email']
 
+                # Send the order confirmation email
                 order_template = load_template(QUEUE_TEMPLATE_MAP[ORDER_QUEUE])
                 if order_template:
                     order_content = render_template(order_template, context)
                     send_email(recipient_email, "Order Confirmation", order_content)
                     logging.info(f"Order confirmation email sent to {recipient_email}")
                 
+                # Send the payment confirmation email
                 payment_template = load_template(QUEUE_TEMPLATE_MAP[PAYMENT_QUEUE])
                 if payment_template:
                     payment_content = render_template(payment_template, context)
                     send_email(recipient_email, "Payment Confirmation", payment_content)
                     logging.info(f"Payment confirmation email sent to {recipient_email}")
 
+                # Notify admin after sending order and payment confirmations
                 notify_admin(queue_name.capitalize(), context, queue_name)
 
 def start_workers():
+    """Start email workers for each queue in separate threads."""
     queues = [RESERVATION_QUEUE, PAYMENT_QUEUE, ORDER_QUEUE]  
     for queue_name in queues:
         worker_thread = threading.Thread(target=email_worker, args=(queue_name,))
