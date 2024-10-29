@@ -92,6 +92,7 @@ router.post("/", (req, res) => {
 
     let email = userRow.email;
     let name= userRow.name;
+    let phone_number = userRow.phone_number;
 
     let checkReservationSql = `SELECT id FROM Reservations WHERE user_id = ? AND date_time = ?`;
     db.get(checkReservationSql, [user_id, date_time], (err, row) => {
@@ -120,7 +121,8 @@ router.post("/", (req, res) => {
             number_of_guests,
             date_time,
             email,
-            name
+            name,
+            phone_number
             
           };
 
