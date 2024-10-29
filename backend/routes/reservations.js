@@ -78,30 +78,37 @@ router.post("/", (req, res) => {
     });
   }
 
-  let db = new sqlite3.Database(databasePath);
+  let db = new sqlite3.Database(databasePath, sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      console.error("Error opening database:", err.message);
+      return res.status(500).json({ error: "Internal server error." });
+    }
+  });
 
-  let checkSql = `SELECT id, email,name FROM User WHERE id = ?`;
+  let checkSql = `SELECT id, email, name, phone_number FROM User WHERE id = ?`;
   db.get(checkSql, [user_id], (err, userRow) => {
     if (err) {
       console.error("Database error:", err.message);
+      db.close();
       return res.status(500).json({ error: "Internal server error." });
     }
     if (!userRow) {
+      db.close();
       return res.status(404).json({ error: "User not found." });
     }
 
-    let email = userRow.email;
-    let name= userRow.name;
-    let phone_number = userRow.phone_number;
+    const { email, name, phone_number } = userRow;
 
     let checkReservationSql = `SELECT id FROM Reservations WHERE user_id = ? AND date_time = ?`;
     db.get(checkReservationSql, [user_id, date_time], (err, row) => {
       if (err) {
         console.error("Database error:", err.message);
+        db.close();
         return res.status(500).json({ error: "Internal server error." });
       }
       if (row) {
-        return res.status(201).json({
+        db.close();
+        return res.status(409).json({
           error: "Reservation for this user at this date and time already exists.",
         });
       }
@@ -113,40 +120,41 @@ router.post("/", (req, res) => {
         function (err) {
           if (err) {
             console.error("Error inserting reservation:", err.message);
+            db.close();
             return res.status(500).json({ error: "Failed to create reservation." });
           }
 
           const reservationDetails = {
+            id: this.lastID,
             user_id,
             number_of_guests,
             date_time,
             email,
             name,
             phone_number,
-            
           };
 
-          
-          redisClient.rPush(RESERVATION_QUEUE, JSON.stringify(reservationDetails))
+          redisClient
+            .rPush(RESERVATION_QUEUE, JSON.stringify(reservationDetails))
             .then(() => {
               console.log("Reservation details sent to queue:", reservationDetails);
             })
-            .catch(err => {
+            .catch((err) => {
               console.error("Failed to add reservation to queue:", err);
             });
 
           res.status(201).json({ id: this.lastID });
+          db.close((err) => {
+            if (err) {
+              console.error("Error closing database connection:", err.message);
+            }
+          });
         }
       );
-
-      db.close((err) => {
-        if (err) {
-          console.error("Error closing database connection:", err.message);
-        }
-      });
     });
   });
 });
+
 
 /**
  * @swagger
